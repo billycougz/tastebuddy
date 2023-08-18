@@ -1,4 +1,5 @@
 import * as React from "react"
+import { SEO } from "../components/seo"
 
 const pageStyles = {
   color: "#232129",
@@ -173,4 +174,4 @@ const IndexPage = () => {
 
 export default IndexPage
 
-export const Head = () => <title>Home Page</title>
+export const Head = () => <SEO title='TasteBuddy' />;
