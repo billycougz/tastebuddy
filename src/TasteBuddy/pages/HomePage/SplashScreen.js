@@ -23,7 +23,7 @@ const SplashScreen = ({ onMenuSelected }) => {
 		inputElement.accept = 'image/*';
 		inputElement.multiple = true;
 		inputElement.hidden = true;
-		const app = document.getElementById('root');
+		const app = document.getElementById('___gatsby');
 		app.appendChild(inputElement);
 		inputElement.onchange = (e) => {
 			const files = Object.values(e.target.files);
