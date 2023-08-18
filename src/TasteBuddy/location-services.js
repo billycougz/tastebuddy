@@ -1,6 +1,9 @@
 import axios from 'axios';
 
 function getUserCoordinates() {
+	if (typeof window === 'undefined') {
+		return;
+	}
 	return new Promise((resolve, reject) => {
 		navigator.geolocation.getCurrentPosition(
 			(position) => {

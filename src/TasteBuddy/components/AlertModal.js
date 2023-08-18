@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Heading2, Paragraph } from '../styles';
+import localStorage from '../localStorage';
 
 const ModalBackdrop = styled.div`
 	position: fixed;

@@ -64,7 +64,7 @@ const Header = styled.h1`
 `;
 
 export default function Modal({ isOpen, onClose, header, children, closeText = 'Close' }) {
-	const isMobile = window.innerWidth <= 768;
+	const isMobile = typeof window === 'undefined' ? false : window.innerWidth <= 768;
 	return (
 		<div>
 			<MobileModalContainer isOpen={isOpen} isMobile={isMobile}>

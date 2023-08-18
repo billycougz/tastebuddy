@@ -5,7 +5,7 @@ import MoodSelectionComponent from './MoodSelectionComponent';
 import ResultsComponent from './ResultsComponent';
 import Menu from '../../components/Menu';
 import PreferencesComponent from '../../components/PreferencesComponent';
-import { getPreferences } from '../../localStorage';
+import localStorage, { getPreferences } from '../../localStorage';
 import Modal from '../../components/Modal';
 import { uploadMenu } from '../../api';
 import { PageContainer } from '../../styles';

@@ -60,11 +60,14 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 	};
 
 	useEffect(() => {
-		window.addEventListener('click', handleOutsideClick);
+		if (typeof window !== 'undefined' ) {
+			window.addEventListener('click', handleOutsideClick);
 
-		return () => {
-			window.removeEventListener('click', handleOutsideClick);
-		};
+			return () => {
+				window.removeEventListener('click', handleOutsideClick);
+			};
+		}
+		
 	}, []);
 
 	const menuItems = [
