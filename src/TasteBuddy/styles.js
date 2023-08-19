@@ -159,3 +159,17 @@ export const TextArea = ({ placeholder, lightBorder, value, onChange }) => {
 		</TextAreaContainer>
 	);
 };
+
+export const Dropdown = styled.select`
+	border: 1px solid #333;
+	border-radius: 4px;
+	background-color: #333;
+	color: ${({ $placeholder }) => ($placeholder ? '#757575' : '#ffffff')};
+	padding: 10px;
+	font-size: 1rem;
+	width: 100%;
+	height: 40px;
+	display: block;
+`;
+
+export const Option = styled.option``;

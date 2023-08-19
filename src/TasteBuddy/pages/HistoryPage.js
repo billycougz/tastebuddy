@@ -1,25 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { PageContainer, Input, ScrollContainer } from '../styles';
+import { PageContainer, Input, ScrollContainer, Dropdown } from '../styles';
 import { getReviews } from '../localStorage';
 import { emojiRatingMap } from '../emojis';
 
 const FilterContainer = styled.div`
 	display: flex;
 	align-items: center;
-`;
-
-const FilterDropdown = styled.select`
-	border: 1px solid #333;
-	border-radius: 4px;
-	margin-right: 10px;
-	background-color: #333;
-	color: #ffffff;
-	padding: 10px;
-	font-size: 1rem;
-	width: 100%;
-	height: 40px;
-	display: block;
 `;
 
 const ReviewCard = styled.div`
@@ -116,14 +103,18 @@ export default function HistoryPage() {
 	return (
 		<PageContainer>
 			<FilterContainer>
-				<FilterDropdown onChange={(e) => handleFilterChange(e.target.value)} value={selectedFilter}>
+				<Dropdown
+					$placeholder={!Boolean(selectedFilter)}
+					onChange={(e) => handleFilterChange(e.target.value)}
+					value={selectedFilter}
+				>
 					<option value=''>Filters</option>
 					{filterProperties.map(({ property, caption }) => (
 						<option key={property} value={property}>
 							{caption}
 						</option>
 					))}
-				</FilterDropdown>
+				</Dropdown>
 				{selectedFilter && (
 					<Input
 						type='text'

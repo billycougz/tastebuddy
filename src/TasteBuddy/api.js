@@ -51,7 +51,7 @@ export async function uploadMenu(files) {
 	return Object.values(fileUploadMap).map(({ s3Filename }) => s3Filename);
 }
 
-export async function searchMenu(processedMenuIds, mood, preferences) {
+export async function searchMenu({ menuIds, menuType, mood, preferences }) {
 	if (__MOCK__) {
 		return {
 			message: 'Here are some options that satisfy your spicy mood:',
@@ -80,8 +80,8 @@ export async function searchMenu(processedMenuIds, mood, preferences) {
 	}
 	const payload = {
 		operation: 'search-menu',
-		extract_names: processedMenuIds,
-		preferences: { ...preferences, mood },
+		extract_names: menuIds,
+		preferences: { menuType, mood, ...preferences },
 	};
 	try {
 		const response = await axios.post(API_ENDPOINT, payload);
