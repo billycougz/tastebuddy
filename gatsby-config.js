@@ -20,6 +20,7 @@ module.exports = {
 			resolve: 'gatsby-plugin-manifest',
 			options: {
 				icon: 'src/images/icon.jpg',
+				display: `standalone`,
 			},
 		},
 		{

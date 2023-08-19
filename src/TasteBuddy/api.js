@@ -3,7 +3,7 @@ import axios from 'axios';
 const __MOCK__ = false;
 
 // ToDo - handle environments
-const API_ENDPOINT = 'https://ce5siinwh3.execute-api.us-east-1.amazonaws.com/default/eli5ify';
+const API_ENDPOINT = 'https://qanlacg4ic.execute-api.us-east-1.amazonaws.com/Prod/';
 
 /**
  * @param {*} files array files from a file input

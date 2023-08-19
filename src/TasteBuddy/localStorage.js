@@ -1,15 +1,16 @@
+import { isBrowser } from './utils';
+
 const PREFERENCES_KEY = 'tastebuddy-preferences';
 const REVIEWS_KEY = 'tasebuddy-reviews';
 const FEEDBACK_GROUP_KEY = 'tastebuddy-fg';
 
-const localStorage =
-	typeof window !== 'undefined'
-		? window.localStorage
-		: {
-				getItem: () => {},
-				setItem: () => {},
-				removeItem: () => {},
-		  };
+const mockLocalStorage = {
+	getItem: () => {},
+	setItem: () => {},
+	removeItem: () => {},
+};
+
+const localStorage = isBrowser() ? window.localStorage : mockLocalStorage;
 
 export default localStorage;
 
