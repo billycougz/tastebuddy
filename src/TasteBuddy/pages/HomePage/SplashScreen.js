@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, PageContainer } from '../../styles';
+import { isDevelopment } from '../../utils';
 
 const FadeContainer = styled.div`
 	opacity: ${({ $fadeIn }) => ($fadeIn ? 1 : 0)};
@@ -14,7 +15,7 @@ const Title = styled.h1`
 	margin-bottom: -1rem;
 `;
 
-const SplashScreen = ({ onMenuSelected }) => {
+const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 	const [fadeIn, setFadeIn] = useState(false);
 
 	const handleMenuSelected = () => {
@@ -50,6 +51,14 @@ const SplashScreen = ({ onMenuSelected }) => {
 				<Button onClick={handleMenuSelected}>
 					Upload Menu <span>📷</span>
 				</Button>
+				{isDevelopment() && (
+					<>
+						<br />
+						<Button mt='1rem' onClick={onMockUpload}>
+							Mock Upload <span>📷</span>
+						</Button>
+					</>
+				)}
 			</FadeContainer>
 		</PageContainer>
 	);

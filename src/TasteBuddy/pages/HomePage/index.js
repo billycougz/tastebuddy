@@ -42,6 +42,15 @@ export default function HomePage({ isVisible, setView }) {
 		}
 	};
 
+	/**
+	 * Mock handleMenuSelected
+	 */
+	const handleMockUpload = () => {
+		const bvp = '865503e0-8fe6-4464-9646-57dba68698e8.png';
+		setProcessedMenuIds([bvp]);
+		setStep('mood-selection');
+	};
+
 	const uploadMenuAsync = async (files) => {
 		const s3Filenames = await uploadMenu(files);
 		setProcessedMenuIds(s3Filenames);
@@ -87,7 +96,9 @@ export default function HomePage({ isVisible, setView }) {
 
 			{step.includes('select') && <Menu view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />}
 
-			{step === 'menu-selection' && <SplashScreen onMenuSelected={handleMenuSelected} />}
+			{step === 'menu-selection' && (
+				<SplashScreen onMenuSelected={handleMenuSelected} onMockUpload={handleMockUpload} />
+			)}
 			{step === 'mood-selection' && (
 				<MoodSelectionComponent
 					onSearchError={handleSearchError}
