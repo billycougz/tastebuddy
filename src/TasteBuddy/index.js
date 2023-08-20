@@ -6,6 +6,7 @@ import HistoryPage from './pages/HistoryPage';
 import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
 import localStorage, { storeFeedbackGroup } from './localStorage';
+import { isBrowser } from './utils';
 
 const AppContainer = styled.div`
 	background-color: #1a1a1a;
@@ -40,26 +41,24 @@ export default function TasteBuddy() {
 
 function getOnLoadAlertType() {
 	let type = '';
+	if (isBrowser()) {
+		const isMobile = window.innerWidth <= 768;
 
-	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+		if (!isMobile) {
+			type = 'desktop';
+		}
 
-	if (!isMobile) {
-		type = 'desktop';
+		const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+		const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
+
+		if (isMobile && isiOS && !isInStandaloneMode) {
+			type = 'mobile';
+		}
+
+		const isAlertDisabled = localStorage.getItem(`tastebuddy-${type}-alert-disabled`);
+		if (isAlertDisabled === 'true') {
+			return '';
+		}
 	}
-
-	// Note: isSafari doesn't actually work
-	const isSafari = typeof window !== 'undefined' && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-	const isiOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
-	const isInStandaloneMode = typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches;
-
-	if (isSafari && isiOS && !isInStandaloneMode) {
-		type = 'mobile';
-	}
-
-	const storedValue = localStorage.getItem(`tastebuddy-${type}-alert-disabled`);
-	if (storedValue === 'true') {
-		return '';
-	}
-
 	return type;
 }
