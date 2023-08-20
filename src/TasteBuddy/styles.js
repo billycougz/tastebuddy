@@ -95,7 +95,7 @@ export const Button = styled.button`
 	padding: 10px 20px;
 	border-radius: 4px;
 	font-size: 1rem;
-	opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+	opacity: ${({ $disabledStyle, disabled }) => ($disabledStyle || disabled ? 0.5 : 1)};
 	width: ${({ fullWidth }) => (fullWidth ? '100%' : 'initial')};
 	cursor: pointer;
 	transition: background-color 0.3s ease-in-out;
@@ -173,3 +173,9 @@ export const Dropdown = styled.select`
 `;
 
 export const Option = styled.option``;
+
+export const ErrorText = styled.p`
+	color: red;
+	font-size: 0.8rem;
+	margin-top: 5px;
+`;

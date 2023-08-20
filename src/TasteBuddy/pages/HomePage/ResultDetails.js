@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TextArea, Button, Input, Paragraph } from '../../styles';
+import { TextArea, Button, Input, Paragraph, ErrorText } from '../../styles';
 import { saveReview } from '../../localStorage';
 import NearbyLocations from '../../components/NearbyLocations';
 import { emojiRatingMap } from '../../emojis';
@@ -45,12 +45,6 @@ const EmojiRating = styled.span`
 
 const H2 = styled.h2`
 	font-size: 1em;
-`;
-
-const ErrorText = styled.p`
-	color: red;
-	font-size: 0.8rem;
-	margin-top: 5px;
 `;
 
 const TasteBuddyDescription = styled.p`
