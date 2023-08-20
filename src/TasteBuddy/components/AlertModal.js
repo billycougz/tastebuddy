@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Heading2, Paragraph } from '../styles';
+import { Button, Heading2, Paragraph } from '../styles';
 import localStorage from '../localStorage';
+import { isMobile } from '../utils';
+import PreferencesComponent from './PreferencesComponent';
 
 const ModalBackdrop = styled.div`
 	position: fixed;
@@ -24,15 +26,14 @@ const ModalContent = styled.div`
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 `;
 
-const CloseButton = styled.button`
+const ButtonContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	margin-top: 1rem;
+`;
+
+const AlertButton = styled(Button)`
 	background-color: #666;
-	color: white;
-	border: none;
-	padding: 10px 15px;
-	border-radius: 3px;
-	cursor: pointer;
-	margin-top: 10px;
-	align-self: flex-end;
 `;
 
 const CheckboxLabel = styled.label`
@@ -48,7 +49,7 @@ const CheckboxInput = styled.input`
 function DesktopContent() {
 	return (
 		<div>
-			<Heading2>Welcome to TasteBuddy!</Heading2>
+			<Heading2>TasteBuddy Desktop</Heading2>
 			<Paragraph>It appears you are using a desktop (non-mobile) device.</Paragraph>
 			<Paragraph>
 				While TasteBuddy should be fully functional on desktop devices, it is designed for mobile and the desktop
@@ -61,7 +62,7 @@ function DesktopContent() {
 function MobileContent() {
 	return (
 		<div>
-			<Heading2>Welcome to TasteBuddy!</Heading2>
+			<Heading2>TasteBuddy Browsers</Heading2>
 			<Paragraph>
 				TasteBuddy supports all browsers but Safari is not recommended. For the best experience, add TasteBuddy to your
 				Home Screen:
@@ -90,8 +91,48 @@ function LocationContent() {
 	);
 }
 
+function IntroContent() {
+	return (
+		<div>
+			<Heading2>Welcome to TasteBuddy!</Heading2>
+			<Paragraph>TasteBuddy is your AI companion for food & drink recommendations.</Paragraph>
+			<Paragraph>
+				When at a restaurant, bar, or anywhere that sells food or drinks, simply take a photo of the menu, tell
+				TasteBuddy what you're in to mood for, and TasteBuddy will take care of the rest!
+			</Paragraph>
+		</div>
+	);
+}
+
+function BrowserContent() {
+	return isMobile() ? <MobileContent /> : <DesktopContent />;
+}
+
+function PreferenceContent() {
+	return (
+		<div>
+			<Heading2>Preferences</Heading2>
+			<Paragraph>Help TasteBuddy understand your preferences.</Paragraph>
+			<Paragraph>TasteBuddy pre-populates a variety of options, but add anything you please.</Paragraph>
+			<PreferencesComponent onUpdate={() => null} />
+		</div>
+	);
+}
+
+function IntroEndContent() {
+	return (
+		<div>
+			<Heading2>Good To Go!</Heading2>
+			<Paragraph>You're ready to give TasteBuddy your first menu!</Paragraph>
+		</div>
+	);
+}
+
+const newUserSegments = [IntroContent, BrowserContent, PreferenceContent, IntroEndContent];
+
 const AlertModal = ({ type, onClose, hideDisable }) => {
 	const [disableAlert, setDisableAlert] = useState(false);
+	const [segmentIndex, setSegmentIndex] = useState(0);
 
 	const handleClose = () => {
 		if (disableAlert) {
@@ -100,21 +141,31 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 		onClose();
 	};
 
+	const showBack = Boolean(type === 'newUser' && segmentIndex);
+	const showNext = Boolean(type === 'newUser' && segmentIndex !== newUserSegments.length - 1);
+	const showDisableCheckbox = !hideDisable && (type === 'newUser' ? !showNext : true);
+
+	const NewUserContent = newUserSegments[segmentIndex];
 	return (
 		<ModalBackdrop>
 			<ModalContent>
 				{type === 'mobile' && <MobileContent />}
 				{type === 'desktop' && <DesktopContent />}
 				{type === 'location' && <LocationContent />}
+				{type === 'newUser' && <NewUserContent />}
 
-				{!hideDisable && (
+				{showDisableCheckbox && (
 					<CheckboxLabel>
 						<CheckboxInput type='checkbox' checked={disableAlert} onChange={() => setDisableAlert(!disableAlert)} />
 						Don't show this again
 					</CheckboxLabel>
 				)}
 
-				<CloseButton onClick={handleClose}>OK</CloseButton>
+				<ButtonContainer>
+					{showBack && <AlertButton onClick={() => setSegmentIndex(segmentIndex - 1)}>Back</AlertButton>}
+					{showNext && <AlertButton onClick={() => setSegmentIndex(segmentIndex + 1)}>Next</AlertButton>}
+					{!showNext && <AlertButton onClick={handleClose}>OK</AlertButton>}
+				</ButtonContainer>
 			</ModalContent>
 		</ModalBackdrop>
 	);

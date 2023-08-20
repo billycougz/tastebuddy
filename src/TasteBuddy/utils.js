@@ -13,3 +13,10 @@ export function isBrowser() {
 export function isDevelopment() {
 	return process.env.NODE_ENV === 'development';
 }
+
+/**
+ * @returns {boolean}
+ */
+export function isMobile() {
+	return window.innerWidth <= 768;
+}

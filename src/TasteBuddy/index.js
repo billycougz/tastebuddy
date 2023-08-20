@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Nav from './components/Nav';
 import AboutPage from './pages/AboutPage';
@@ -6,7 +6,8 @@ import HistoryPage from './pages/HistoryPage';
 import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
 import localStorage, { storeFeedbackGroup } from './localStorage';
-import { isBrowser } from './utils';
+import { isBrowser, isMobile } from './utils';
+import PreferencesComponent from './components/PreferencesComponent';
 
 const AppContainer = styled.div`
 	background-color: #1a1a1a;
@@ -20,15 +21,19 @@ const Main = styled.main`
 	padding-bottom: 0;
 `;
 
-storeFeedbackGroup();
-
 export default function TasteBuddy() {
 	const [view, setView] = useState('home-page');
-	const [showAlertType, setShowAlertType] = useState(getOnLoadAlertType()); // '' | 'mobile' | 'desktop'
+	const [showAlertType, setShowAlertType] = useState(getOnLoadAlertType()); // '' | 'mobile' | 'desktop' | 'newUser'
+	const [showPreferences, setShowPreferences] = useState(false);
+
+	useEffect(() => {
+		storeFeedbackGroup();
+	}, []);
 
 	return (
 		<AppContainer>
 			{showAlertType && <AlertModal type={showAlertType} onClose={() => setShowAlertType('')} />}
+			{!showAlertType && showPreferences && <PreferencesComponent />}
 			<Main>
 				<HomePage isVisible={view === 'home-page'} setView={setView} />
 				{view === 'history-page' && <HistoryPage />}
@@ -42,9 +47,13 @@ export default function TasteBuddy() {
 function getOnLoadAlertType() {
 	let type = '';
 	if (isBrowser()) {
-		const isMobile = window.innerWidth <= 768;
+		const isAlertDisabled = (alertType) => Boolean(localStorage.getItem(`tastebuddy-${alertType}-alert-disabled`));
 
-		if (!isMobile) {
+		if (!isAlertDisabled('newUser')) {
+			return 'newUser';
+		}
+
+		if (!isMobile()) {
 			type = 'desktop';
 		}
 
@@ -55,8 +64,7 @@ function getOnLoadAlertType() {
 			type = 'mobile';
 		}
 
-		const isAlertDisabled = localStorage.getItem(`tastebuddy-${type}-alert-disabled`);
-		if (isAlertDisabled === 'true') {
+		if (isAlertDisabled(type)) {
 			return '';
 		}
 	}

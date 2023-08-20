@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { savePreferences } from '../localStorage';
+import { getPreferences, savePreferences } from '../localStorage';
 import Modal from './Modal';
 import preferenceOptions from '../preference-options';
 import { Input } from '../styles';
@@ -80,7 +80,8 @@ const StyledCheckbox = styled.input`
 	background-color: #333; /* Background color for dark theme */
 `;
 
-export default function PreferencesComponent({ preferences, onUpdate }) {
+export default function PreferencesComponent({ onUpdate }) {
+	const [preferences, setPreferences] = useState(getPreferences());
 	const [{ category, selectionMap }, setEditCategorySelections] = useState({});
 	const [searchText, setSearchText] = useState('');
 	const [onlySelected, setOnlySelected] = useState(false);
@@ -121,6 +122,7 @@ export default function PreferencesComponent({ preferences, onUpdate }) {
 		const updatedPreferences = { ...preferences, [category]: selections };
 		savePreferences(updatedPreferences);
 		onUpdate(updatedPreferences);
+		setPreferences(updatedPreferences);
 		setSearchText('');
 		setEditCategorySelections({});
 	};

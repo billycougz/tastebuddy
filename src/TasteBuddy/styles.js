@@ -18,12 +18,14 @@ export const colors = {
 	red: 'red',
 };
 
-const marginProps = css`
-	margin-top: ${({ mt }) => mt || 'initial'};
-	margin-right: ${({ mr }) => mr || 'initial'};
-	margin-bottom: ${({ mb }) => mb || 'initial'};
-	margin-left: ${({ ml }) => ml || 'initial'};
-`;
+const applyMargin = (defaults = {}) => {
+	return css`
+		margin-top: ${({ mt }) => mt || defaults.mt || 'initial'};
+		margin-right: ${({ mr }) => mr || defaults.mr || 'initial'};
+		margin-bottom: ${({ mb }) => mb || defaults.mb || 'initial'};
+		margin-left: ${({ ml }) => ml || defaults.ml || 'initial'};
+	`;
+};
 
 export const Title = styled.h1`
 	font-size: 3rem;
@@ -32,12 +34,12 @@ export const Title = styled.h1`
 
 export const Heading1 = styled.h1`
 	font-size: 2rem;
-	${marginProps};
+	${applyMargin()};
 `;
 
 export const Heading2 = styled.h2`
 	font-size: 1.5rem;
-	${marginProps};
+	${applyMargin()};
 `;
 
 export const Heading3 = styled.h3`
@@ -48,7 +50,7 @@ export const Heading3 = styled.h3`
 export const Paragraph = styled.p`
 	font-size: 1rem;
 	line-height: 1.5;
-	${marginProps}
+	${applyMargin({ mt: '1rem' })}
 `;
 
 export const Link = styled.a`
@@ -99,7 +101,7 @@ export const Button = styled.button`
 	width: ${({ fullWidth }) => (fullWidth ? '100%' : 'initial')};
 	cursor: pointer;
 	transition: background-color 0.3s ease-in-out;
-	${marginProps};
+	${applyMargin()};
 	&:hover {
 		background-color: ${({ transparent }) => (transparent ? 'transparent' : '#555')};
 	}
@@ -116,7 +118,7 @@ export const Input = styled.input`
 	border-radius: 4px;
 	font-size: 1rem;
 	caret-color: ${({ $prompt }) => ($prompt ? 'transparent' : 'initial')};
-	${marginProps};
+	${applyMargin()};
 `;
 
 const TextAreaContainer = styled.div`
