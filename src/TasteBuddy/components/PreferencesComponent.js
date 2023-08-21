@@ -20,7 +20,6 @@ const Section = styled.div`
 	width: 100%;
 	background-color: #333;
 	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	padding: 10px 10px 0px 10px;
 	margin-bottom: 20px;
 `;

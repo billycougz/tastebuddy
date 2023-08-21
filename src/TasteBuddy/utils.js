@@ -1,6 +1,5 @@
 /**
  * Useful for safeguarding Gatsby build against browser APIs
- * @returns {boolean}
  */
 export function isBrowser() {
 	return typeof window !== 'undefined';
@@ -8,15 +7,23 @@ export function isBrowser() {
 
 /**
  * Useful for enabling testing features
- * @returns {boolean}
  */
 export function isDevelopment() {
 	return process.env.NODE_ENV === 'development';
 }
 
-/**
- * @returns {boolean}
- */
 export function isMobile() {
 	return window.innerWidth <= 768;
+}
+
+export function isStandalone() {
+	return window.matchMedia('(display-mode: standalone)').matches;
+}
+
+export function isiOS() {
+	return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+export function isAndroid() {
+	return /Android/.test(navigator.userAgent);
 }

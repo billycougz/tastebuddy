@@ -15,7 +15,7 @@ export const colors = {
 	gray4: '#999',
 	white: '#ffffff',
 	black: '#000000',
-	red: 'red',
+	red: '#f67571',
 };
 
 const applyMargin = (defaults = {}) => {

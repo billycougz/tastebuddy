@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Heading2, Paragraph } from '../styles';
 import localStorage from '../localStorage';
-import { isMobile } from '../utils';
+import { isAndroid, isMobile } from '../utils';
 import PreferencesComponent from './PreferencesComponent';
+import { GoShare } from 'react-icons/go';
+import { BsPlusSquare } from 'react-icons/bs';
+import AndroidInstallButton from './AndroidInstallButton';
 
 const ModalBackdrop = styled.div`
 	position: fixed;
@@ -23,6 +26,7 @@ const ModalContent = styled.div`
 	color: white;
 	padding: 20px;
 	border-radius: 5px;
+	max-height: 100vh;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 `;
 
@@ -46,6 +50,16 @@ const CheckboxInput = styled.input`
 	margin-right: 5px;
 `;
 
+const ListItem = styled.li`
+	line-height: 2rem;
+`;
+
+const AddToHomeScreenIcon = styled(BsPlusSquare)`
+	position: relative;
+	top: 3px;
+	left: 2px;
+`;
+
 function DesktopContent() {
 	return (
 		<div>
@@ -64,15 +78,25 @@ function MobileContent() {
 		<div>
 			<Heading2>TasteBuddy Browsers</Heading2>
 			<Paragraph>
-				TasteBuddy supports all browsers but Safari is not recommended. For the best experience, add TasteBuddy to your
-				Home Screen:
+				TasteBuddy supports all browsers but for the best experience, install TasteBuddy as an app on your Home Screen:
 			</Paragraph>
-			<ol>
-				<li>Tap the browser's 'Share' button</li>
-				<li>Select 'Add to Home Screen'</li>
-				<li>Follow the prompts</li>
-			</ol>
-			<Paragraph>You will then have a TasteBuddy icon on your Home Screen as you do with any other app.</Paragraph>
+			{isAndroid() && <AndroidInstallButton />}
+			{!isAndroid() && (
+				<ol>
+					<ListItem>
+						Tap the browser's <GoShare /> button
+					</ListItem>
+					<ListItem>
+						Select{' '}
+						<strong>
+							Add to Home Screen <AddToHomeScreenIcon />
+						</strong>
+					</ListItem>
+					<ListItem>
+						Tap <strong>Add</strong>
+					</ListItem>
+				</ol>
+			)}
 		</div>
 	);
 }
@@ -97,8 +121,8 @@ function IntroContent() {
 			<Heading2>Welcome to TasteBuddy!</Heading2>
 			<Paragraph>TasteBuddy is your AI companion for food & drink recommendations.</Paragraph>
 			<Paragraph>
-				When at a restaurant, bar, or anywhere that sells food or drinks, simply take a photo of the menu, tell
-				TasteBuddy what you're in to mood for, and TasteBuddy will take care of the rest!
+				Simply take a photo of any food or drink menu, tell TasteBuddy what you're in to mood for, and TasteBuddy will
+				take care of the rest!
 			</Paragraph>
 		</div>
 	);
@@ -108,22 +132,36 @@ function BrowserContent() {
 	return isMobile() ? <MobileContent /> : <DesktopContent />;
 }
 
+const PreferenceContainer = styled.div`
+	margin: 1rem -10px;
+	max-height: 300px;
+	overflow: scroll;
+`;
+
 function PreferenceContent() {
 	return (
-		<div>
+		<>
 			<Heading2>Preferences</Heading2>
-			<Paragraph>Help TasteBuddy understand your preferences.</Paragraph>
-			<Paragraph>TasteBuddy pre-populates a variety of options, but add anything you please.</Paragraph>
-			<PreferencesComponent onUpdate={() => null} />
-		</div>
+			<Paragraph>Help TasteBuddy build your taste profile.</Paragraph>
+			<Paragraph>
+				TasteBuddy pre-populates some items to choose from, but please add your own items if not already listed.
+			</Paragraph>
+			<PreferenceContainer>
+				<PreferencesComponent onUpdate={() => null} />
+			</PreferenceContainer>
+		</>
 	);
 }
 
 function IntroEndContent() {
 	return (
 		<div>
-			<Heading2>Good To Go!</Heading2>
-			<Paragraph>You're ready to give TasteBuddy your first menu!</Paragraph>
+			<Heading2>Let's Eat!</Heading2>
+			<Paragraph>
+				TasteBuddy is ready for your first menu! You can revisit this information anytime from the{' '}
+				<strong>About</strong> tab.
+			</Paragraph>
+			<Paragraph></Paragraph>
 		</div>
 	);
 }
