@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Heading2, Paragraph } from '../styles';
 import localStorage from '../localStorage';
-import { isAndroid, isMobile } from '../utils';
+import { isAndroid, isMobile, isStandalone } from '../utils';
 import PreferencesComponent from './PreferencesComponent';
 import { GoShare } from 'react-icons/go';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -73,6 +73,15 @@ function DesktopContent() {
 	);
 }
 
+function StandaloneContent() {
+	return (
+		<div>
+			<Heading2>TasteBuddy App</Heading2>
+			<Paragraph>Excellent! You are running TasteBuddy with the optimal experience.</Paragraph>
+		</div>
+	);
+}
+
 function MobileContent() {
 	return (
 		<div>
@@ -81,7 +90,8 @@ function MobileContent() {
 				TasteBuddy supports all browsers but for the best experience, install TasteBuddy as an app on your Home Screen:
 			</Paragraph>
 			{isAndroid() && <AndroidInstallButton />}
-			{!isAndroid() && (
+			{isStandalone() && <StandaloneContent />}
+			{!isAndroid() && !isStandalone() && (
 				<ol>
 					<ListItem>
 						Tap the browser's <GoShare /> button
