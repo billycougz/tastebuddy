@@ -171,7 +171,15 @@ function IntroEndContent() {
 				TasteBuddy is ready for your first menu! You can revisit this information anytime from the{' '}
 				<strong>About</strong> tab.
 			</Paragraph>
-			<Paragraph></Paragraph>
+		</div>
+	);
+}
+
+function SearchErrorContent() {
+	return (
+		<div>
+			<Heading2>Something went wrong.</Heading2>
+			<Paragraph>Please try again. If the issue persists, please report it.</Paragraph>
 		</div>
 	);
 }
@@ -201,6 +209,7 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 				{type === 'desktop' && <DesktopContent />}
 				{type === 'location' && <LocationContent />}
 				{type === 'newUser' && <NewUserContent />}
+				{type === 'searchError' && <SearchErrorContent />}
 
 				{showDisableCheckbox && (
 					<CheckboxLabel>

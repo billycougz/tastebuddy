@@ -36,18 +36,23 @@ export default function MoodSelectionComponent({
 			return;
 		}
 		setIsLoading(true);
-		const response = await searchMenu({
-			category: selectedCategory,
-			menuIds: processedMenuIds,
-			moodInputValue,
-			preferences,
-		});
-		if (response.error) {
-			onSearchError(response.error);
-		} else {
-			response.menuIds = processedMenuIds;
-			onSearchResults(response);
+		try {
+			const response = await searchMenu({
+				category: selectedCategory,
+				menuIds: processedMenuIds,
+				moodInputValue,
+				preferences,
+			});
+			if (response.error) {
+				onSearchError(response.error);
+			} else {
+				response.menuIds = processedMenuIds;
+				onSearchResults(response);
+			}
+		} catch (e) {
+			onSearchError(e.message);
 		}
+
 		setIsLoading(false);
 	};
 

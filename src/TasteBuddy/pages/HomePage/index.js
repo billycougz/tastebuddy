@@ -22,7 +22,7 @@ export default function HomePage({ isVisible, setView }) {
 	const [processedMenuIds, setProcessedMenuIds] = useState(null);
 	const [searchResults, setSearchResults] = useState(null);
 	const [preferences, setPreferences] = useState(getPreferences());
-	const [showLocationAlert, setShowLocationAlert] = useState(false);
+	const [showAlertType, setShowAlertType] = useState('');
 	const [nearbyPlaces, setNearbyPlaces] = useState(null);
 
 	const handleMenuSelected = async (files) => {
@@ -31,7 +31,7 @@ export default function HomePage({ isVisible, setView }) {
 			// Intentionally not awaiting to allow execution to continue
 			uploadMenuAsync(files);
 			if (doDisplayLocationAlert()) {
-				setShowLocationAlert(true);
+				setShowAlertType('location');
 			} else {
 				const results = await fetchNearbyPlaces();
 				setNearbyPlaces(results);
@@ -69,7 +69,7 @@ export default function HomePage({ isVisible, setView }) {
 	};
 
 	const handleSearchError = (error) => {
-		alert(error);
+		setShowAlertType('searchError');
 		setStep('menu-selection');
 	};
 
@@ -81,7 +81,7 @@ export default function HomePage({ isVisible, setView }) {
 	};
 
 	const handleCloseLocationModal = async () => {
-		setShowLocationAlert(false);
+		setShowAlertType('');
 		const results = await fetchNearbyPlaces();
 		setNearbyPlaces(results);
 	};
@@ -92,7 +92,7 @@ export default function HomePage({ isVisible, setView }) {
 				<PreferencesComponent preferences={preferences} onUpdate={setPreferences} />
 			</Modal>
 
-			{showLocationAlert && <AlertModal type='location' hideDisable onClose={handleCloseLocationModal} />}
+			{showAlertType && <AlertModal type={showAlertType} hideDisable onClose={handleCloseLocationModal} />}
 
 			{step.includes('select') && <Menu view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />}
 
