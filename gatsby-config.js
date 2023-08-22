@@ -11,6 +11,7 @@ module.exports = {
 		siteUrl: `https://tastebuddy.williamcougan.com`,
 		description: 'TasteBuddy is your AI companion for food & drink recommendations',
 		image: '/site-img.jpeg',
+		version: process.env.npm_package_version,
 	},
 	plugins: [
 		{

@@ -14,6 +14,7 @@ import {
 	TextArea,
 } from '../styles';
 import AlertModal from '../components/AlertModal';
+import { useAppVersion } from '../utils';
 
 const Section = styled.div`
 	margin-bottom: 1rem;
@@ -21,16 +22,23 @@ const Section = styled.div`
 
 const Card = styled.div`
 	background-color: #333; /* Dark theme background color */
-	padding: 1.5rem;
+	padding: 1rem;
 	border-radius: 8px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Card shadow */
 `;
 
+const Version = styled.p`
+	margin: -1rem 0 0 0;
+	font-size: 0.75rem;
+`;
+
 export default function AboutPage() {
+	const appVersion = useAppVersion();
 	const [showInstallSteps, setShowInstallSteps] = useState(false);
 	return (
 		<PageContainer>
 			<Heading1>About TasteBuddy</Heading1>
+			<Version>Version {appVersion}</Version>
 			<ScrollContainer>
 				<Section>
 					<Paragraph>
@@ -43,10 +51,8 @@ export default function AboutPage() {
 				<Section>
 					<Card>
 						<Heading2>TasteBuddy Beta</Heading2>
-						<Paragraph>
-							TasteBuddy is in beta. Congratulations, you're an early adopter! See below for what this means for you and
-							the progression of the app.
-						</Paragraph>
+						<Paragraph>TasteBuddy is in a beta-development stage. Congratulations on getting in early!</Paragraph>
+						<Paragraph>See below for what this means for you and the progression of the app.</Paragraph>
 					</Card>
 				</Section>
 
