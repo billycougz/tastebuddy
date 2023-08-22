@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
 import { Input, Paragraph, Button } from '../styles';
+import { autocompletePlaces } from '../location-services';
 
 const ModalContainer = styled.div`
 	background-color: #1f1f1f;
@@ -60,20 +61,18 @@ const mockLocations = [
 	},
 ];
 
+/**
+ * locations will be null when location services are disabled
+ * locations will be an empty array if nothing was found nearby
+ * locations will otherwise be an array of places
+ * autocompleteLocations is separate and should work regardless of location services
+ */
 export default function NearbyLocations({ locations, isOpen, onClose }) {
-	// const locations = mockLocations;
+	const [isManual, setIsManual] = useState(false);
+	const [suggestions, setSuggestions] = useState(locations || []);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [vicinity, setVicinity] = useState('');
-	const [isManual, setIsManual] = useState(!Boolean(locations?.length));
-
-	useEffect(() => {
-		// Account for race condition between user and locations loaded
-		setIsManual(!Boolean(locations?.length));
-	}, [locations]);
-
-	const filteredLocations = locations?.filter((location) =>
-		location.name.toLowerCase().includes(searchTerm.toLowerCase())
-	);
+	const [searchTimeout, setSearchTimeout] = useState(null);
 
 	const handleLocationClick = (location) => {
 		onClose(location);
@@ -83,32 +82,44 @@ export default function NearbyLocations({ locations, isOpen, onClose }) {
 		onClose({ name: searchTerm, vicinity: vicinity || 'Not Provided', manual: true });
 	};
 
+	const handleSearchChange = async (e) => {
+		const newText = e.target.value;
+		setSearchTerm(newText);
+		if (!isManual) {
+			// Debounce using timeout
+			clearTimeout(searchTimeout);
+			setSearchTimeout(
+				setTimeout(async () => {
+					const results = await autocompletePlaces(newText);
+					setSuggestions(
+						results.map((prediction) => ({
+							...prediction,
+							name: prediction.structured_formatting.main_text,
+							vicinity: prediction.structured_formatting.secondary_text,
+						}))
+					);
+				}, 500)
+			);
+		}
+	};
+
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} closeText='Cancel'>
-			{!Boolean(locations?.length) && (
-				<ModalContainer>
-					{locations === null && (
-						<Paragraph>Your Location Services are disabled. Please enter the restaurant name manually.</Paragraph>
-					)}
-					{locations?.length === 0 && (
-						<Paragraph>
-							TasteBuddy didn't find any nearby establishments. Please enter the restaurant name manually.
-						</Paragraph>
-					)}
-				</ModalContainer>
-			)}
-
-			{Boolean(locations?.length) && (
-				<Button mt='-1rem' fullWidth transparent onClick={() => setIsManual(!isManual)}>
-					{isManual ? 'Show Nearby Locations' : 'Manually Enter Location'}
-				</Button>
-			)}
+			<Button mt='-1rem' fullWidth transparent onClick={() => setIsManual(!isManual)}>
+				{isManual ? 'Show Suggestions' : 'Disable Suggestions'}
+			</Button>
 
 			<Input
 				type='text'
-				placeholder={isManual ? 'Enter establishment name' : 'Search locations'}
+				placeholder={
+					isManual
+						? 'Enter establishment name...'
+						: suggestions.length
+						? 'Search locations...'
+						: 'Type to populate suggestions...'
+				}
 				value={searchTerm}
-				onChange={(e) => setSearchTerm(e.target.value)}
+				onChange={handleSearchChange}
 			/>
 
 			{isManual && (
@@ -127,10 +138,10 @@ export default function NearbyLocations({ locations, isOpen, onClose }) {
 				</Button>
 			)}
 
-			{!isManual && (
+			{!isManual && suggestions && suggestions.length !== 0 && (
 				<ModalContainer>
 					<DarkModeList>
-						{filteredLocations.map((location) => (
+						{suggestions.map((location) => (
 							<LocationItem key={location.id} onClick={() => handleLocationClick(location)}>
 								<LocationName>{location.name}</LocationName>
 								<p>{location.vicinity}</p>
