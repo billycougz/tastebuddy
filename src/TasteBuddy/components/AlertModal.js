@@ -88,9 +88,8 @@ function MobileContent() {
 	return (
 		<div>
 			<Heading2>TasteBuddy App</Heading2>
-			<Paragraph>Install TasteBuddy to your Home Screen for the best experience:</Paragraph>
+			<Paragraph>Add TasteBuddy to your Home Screen for the best experience:</Paragraph>
 			{isAndroid() && <AndroidInstallButton />}
-			{isStandalone() && <StandaloneContent />}
 			{!isAndroid() && !isStandalone() && (
 				<List ordered>
 					<ListItem>
@@ -141,6 +140,9 @@ function IntroContent() {
 }
 
 function BrowserContent() {
+	if (isStandalone()) {
+		return <StandaloneContent />;
+	}
 	return isMobile() ? <MobileContent /> : <DesktopContent />;
 }
 
