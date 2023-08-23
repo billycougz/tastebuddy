@@ -96,11 +96,12 @@ export async function searchMenu({ category, menuIds, menuType, mood, preference
 }
 
 export async function postFeedback(feedback) {
+	const url = 'https://idv6trz3sxytzji2e57rbpz2ma0sqtyj.lambda-url.us-east-1.on.aws/';
 	const data = {
-		app: 'tastebuddy',
-		data: feedback,
+		app: 'TasteBuddy',
+		...feedback,
 	};
-	const response = await axios.post('ToDo', data);
+	const response = await axios.post(url, data);
 	if (response.data) {
 		return response.data;
 	}

@@ -46,13 +46,15 @@ export default function FeedbackModal({ isOpen, onClose }) {
 		setFeedback({ ...feedback, message });
 	};
 
-	const storedUser = getUserProfile();
-
 	return (
 		<Modal header='Feedback & Questions' isOpen={isOpen} onClose={onClose}>
 			<Paragraph>Your feedback will be received immediately!</Paragraph>
 			<Paragraph>Provide your name and contact info if you're open to be contacted for additional feedback.</Paragraph>
-			{success && <Paragraph>Your feedback was submitted! Send more anytime.</Paragraph>}
+			{success && (
+				<Paragraph color='green'>
+					Your feedback was submitted! Send another message now or anytime you think of something.
+				</Paragraph>
+			)}
 			<FlexContainer mt='1rem'>
 				<TextArea
 					onChange={handleMessageChange}

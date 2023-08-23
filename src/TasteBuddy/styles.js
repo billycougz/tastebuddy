@@ -50,6 +50,7 @@ export const Heading3 = styled.h3`
 export const Paragraph = styled.p`
 	font-size: 1rem;
 	line-height: 1.5;
+	color: ${({ color }) => color || 'white'};
 	${applyMargin({ mt: '1rem' })}
 `;
 
