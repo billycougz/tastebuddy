@@ -10,7 +10,7 @@
   "scripts": {
     "develop": "gatsby develop -H 0.0.0.0 -p 8000",
     "start": "gatsby develop",
-    "build": "npm version patch && gatsby build",
+    "build": "gatsby build",
     "serve": "gatsby serve -H 0.0.0.0 -p 8000",
     "clean": "gatsby clean",
     "deploy": "npm run build && gh-pages -d public -b gh-pages"
