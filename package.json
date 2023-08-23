@@ -13,7 +13,7 @@
     "build": "gatsby build",
     "serve": "gatsby serve -H 0.0.0.0 -p 8000",
     "clean": "gatsby clean",
-    "deploy": "npm version patch && gatsby build && gh-pages -d public -b gh-pages"
+    "deploy": "npm version patch && gatsby clean && gatsby build && gh-pages -d public -b gh-pages"
   },
   "dependencies": {
     "axios": "^1.4.0",
