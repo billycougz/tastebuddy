@@ -3,6 +3,7 @@ import { isBrowser } from './utils';
 const PREFERENCES_KEY = 'tastebuddy-preferences';
 const REVIEWS_KEY = 'tasebuddy-reviews';
 const FEEDBACK_GROUP_KEY = 'tastebuddy-fg';
+const USER_PROFILE_KEY = 'tastebuddy-user-profile';
 
 const mockLocalStorage = {
 	getItem: () => {},
@@ -28,6 +29,16 @@ export function getPreferences() {
 export function savePreferences(preferences) {
 	const stringifiedPreferences = JSON.stringify(preferences);
 	localStorage.setItem(PREFERENCES_KEY, stringifiedPreferences);
+}
+
+export function getUserProfile() {
+	const rawValue = localStorage.getItem(USER_PROFILE_KEY);
+	const data = rawValue ? JSON.parse(rawValue) : {};
+	return data;
+}
+
+export function updateUserProfile(newProfile) {
+	localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(newProfile));
 }
 
 export function getReviews() {

@@ -94,3 +94,14 @@ export async function searchMenu({ category, menuIds, menuType, mood, preference
 	}
 	throw new Error('There was an error with the askQuestion() request.');
 }
+
+export async function postFeedback(feedback) {
+	const data = {
+		app: 'tastebuddy',
+		data: feedback,
+	};
+	const response = await axios.post('ToDo', data);
+	if (response.data) {
+		return response.data;
+	}
+}

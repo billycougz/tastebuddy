@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import FeedbackModal from './FeedbackModal';
 
 const DropdownContainer = styled.div`
 	position: fixed;
@@ -43,6 +44,7 @@ const DropdownMenuItem = styled.li`
 
 export default function Menu({ view, onViewChange, onShowPreferences }) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const dropdownRef = useRef(null);
 
 	const toggleDropdown = () => {
@@ -60,14 +62,13 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 	};
 
 	useEffect(() => {
-		if (typeof window !== 'undefined' ) {
+		if (typeof window !== 'undefined') {
 			window.addEventListener('click', handleOutsideClick);
 
 			return () => {
 				window.removeEventListener('click', handleOutsideClick);
 			};
 		}
-		
 	}, []);
 
 	const menuItems = [
@@ -89,20 +90,24 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 		},
 		{
 			label: 'View or change your preferences',
-			showIf: ['menu-selection', 'mood-selection', 'result-selection'],
 			onClick: () => {
 				onShowPreferences(true);
 				closeDropdown();
 			},
 		},
+		{
+			label: 'Provide feedback',
+			onClick: () => setShowFeedbackModal(true),
+		},
 	];
 
 	return (
 		<DropdownContainer ref={dropdownRef}>
+			<FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
 			<DropdownButton onClick={toggleDropdown}>...</DropdownButton>
 			<DropdownMenu isOpen={isDropdownOpen}>
 				{menuItems
-					.filter(({ showIf }) => showIf.includes(view))
+					.filter(({ showIf }) => !showIf || showIf.includes(view))
 					.map((item, index, filteredItems) => (
 						<DropdownMenuItem key={index} isLast={index === filteredItems.length - 1} onClick={item.onClick}>
 							{item.label}

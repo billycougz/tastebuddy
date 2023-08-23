@@ -88,9 +88,7 @@ function MobileContent() {
 	return (
 		<div>
 			<Heading2>TasteBuddy App</Heading2>
-			<Paragraph>
-				TasteBuddy can run in the browser but install it to your Home Screen for the best experience:
-			</Paragraph>
+			<Paragraph>Install TasteBuddy to your Home Screen for the best experience:</Paragraph>
 			{isAndroid() && <AndroidInstallButton />}
 			{isStandalone() && <StandaloneContent />}
 			{!isAndroid() && !isStandalone() && (

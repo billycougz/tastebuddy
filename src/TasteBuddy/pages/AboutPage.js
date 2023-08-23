@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
 	Button,
@@ -8,13 +8,19 @@ import {
 	Heading3,
 	Input,
 	Link,
+	List,
+	ListItem,
 	PageContainer,
 	Paragraph,
 	ScrollContainer,
 	TextArea,
+	WhiteButton,
+	InputWithIcon,
 } from '../styles';
 import AlertModal from '../components/AlertModal';
 import { useAppVersion } from '../utils';
+import FeedbackModal from '../components/FeedbackModal';
+import UserProfile from '../components/UserProfile';
 
 const Section = styled.div`
 	margin-bottom: 1rem;
@@ -35,13 +41,15 @@ const Version = styled.p`
 export default function AboutPage() {
 	const appVersion = useAppVersion();
 	const [showInstallSteps, setShowInstallSteps] = useState(false);
+	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
 	return (
 		<PageContainer>
 			<Heading1>About TasteBuddy</Heading1>
 			<Version>Version {appVersion}</Version>
 			<ScrollContainer>
 				<Section>
-					<Paragraph>
+					<Paragraph mt='0'>
 						TasteBuddy is powered by the GPT AI and uses your personal taste preferences to help you find the menu items
 						that you will most enjoy.
 					</Paragraph>
@@ -58,48 +66,58 @@ export default function AboutPage() {
 
 				<Section>
 					<Card>
-						<Heading3>Beta - Native App & Browsers</Heading3>
+						<Heading3>App & Browsers</Heading3>
 						<Paragraph>
 							Eventually TasteBuddy will have native iOS & Android apps but the current version of TasteBuddy runs
 							within the browser.
 						</Paragraph>
 						<Paragraph>
-							<strong>Mobile: </strong>User experience quality can vary by browser. It is recommended to avoid using
-							Safari, and for the best experience{' '}
-							<Link onClick={() => setShowInstallSteps(true)}>add TasteBuddy to your Home Screen</Link>.
-							{showInstallSteps && <AlertModal type='mobile' hideDisable onClose={() => setShowInstallSteps(false)} />}
-						</Paragraph>
-						<Paragraph>
 							<strong>Desktop: </strong>While TasteBuddy should be fully functional on desktop devices, it is designed
 							for mobile and the desktop experience will likely look and feel subpar.
+						</Paragraph>
+						<Paragraph>
+							<strong>Mobile: </strong>User experience quality can vary by browser. It is recommended to avoid using
+							Safari, and for the best experience add TasteBuddy to your Home Screen.
+							<WhiteButton mt='1rem' fullWidth onClick={() => setShowInstallSteps(true)}>
+								Add TasteBuddy to your Home Screen
+							</WhiteButton>
+							{showInstallSteps && <AlertModal type='mobile' hideDisable onClose={() => setShowInstallSteps(false)} />}
 						</Paragraph>
 					</Card>
 				</Section>
 
 				<Section>
 					<Card>
-						<Heading3>Beta - Accounts & Data</Heading3>
+						<Heading3>Accounts & Data</Heading3>
 						<Paragraph>
 							The current version of TasteBuddy does not require you to create an account. Your TasteBuddy data, such as
 							your preferences and review history, is all stored within your browser. If you use multiple browsers, each
 							will have a separate set of data.
 						</Paragraph>
+						<Paragraph>
+							You can optionally provide your info enabling me to contact you for feedback.
+							<UserProfile />
+						</Paragraph>
 					</Card>
 				</Section>
 
 				<Section>
 					<Card>
-						<Heading2 mb='0'>Provide Feedback</Heading2>
-
-						<FlexContainer>
-							<Paragraph>
-								Let me know what you think. Provide your contact info if you're open to me reaching back out.
-							</Paragraph>
-							<TextArea placeholder='Feature ideas, bugs, general feedback...' lightBorder />
-							<Input type='text' placeholder='Your name (optional)' lightBorder />
-							<Input type='text' placeholder='Your phone or email (optional)' lightBorder />
-							<Button fullWidth>Submit</Button>
-						</FlexContainer>
+						<Heading3>Feedback & Questions</Heading3>
+						<Paragraph>
+							Submit your feedback directly through the app and optionally provide your contact info.
+							<List>
+								<ListItem>Report a bug</ListItem>
+								<ListItem>Suggest a UX change</ListItem>
+								<ListItem>Request a feature</ListItem>
+								<ListItem>Ask a question</ListItem>
+								<ListItem>Provide general Feedback</ListItem>
+							</List>
+						</Paragraph>
+						<WhiteButton fullWidth onClick={() => setShowFeedbackModal(true)}>
+							Begin
+						</WhiteButton>
+						<FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
 					</Card>
 				</Section>
 			</ScrollContainer>

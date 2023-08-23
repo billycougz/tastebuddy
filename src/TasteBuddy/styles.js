@@ -83,6 +83,7 @@ export const PageContainer = styled.div`
 
 export const FlexContainer = styled.div`
 	${flexStyles};
+	${applyMargin()}
 `;
 
 export const ScrollContainer = styled(PageContainer)`
@@ -107,6 +108,13 @@ export const Button = styled.button`
 	}
 `;
 
+export const InputContainer = styled.div`
+	position: relative;
+	display: flex;
+	align-items: baseline;
+	gap: 1rem;
+`;
+
 export const Input = styled.input`
 	width: 100%;
 	padding: 10px;
@@ -120,6 +128,21 @@ export const Input = styled.input`
 	caret-color: ${({ $prompt }) => ($prompt ? 'transparent' : 'initial')};
 	${applyMargin()};
 `;
+
+export const IconContainer = styled.div``;
+
+export const InputWithIcon = ({ icon: IconComponent, ...props }) => {
+	return (
+		<InputContainer>
+			<Input {...props} />
+			{IconComponent && (
+				<IconContainer>
+					<IconComponent />
+				</IconContainer>
+			)}
+		</InputContainer>
+	);
+};
 
 export const WhiteButton = styled(Button)`
 	display: block;
