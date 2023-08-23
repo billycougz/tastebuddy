@@ -92,7 +92,7 @@ export const ScrollContainer = styled(PageContainer)`
 
 export const Button = styled.button`
 	background-color: ${({ transparent }) => (transparent ? 'transparent' : '#333')};
-	color: #fff;
+	color: ${({ $redText }) => ($redText ? colors.red : '#fff')};
 	border: none;
 	padding: 10px 20px;
 	border-radius: 4px;
@@ -119,6 +119,12 @@ export const Input = styled.input`
 	font-size: 1rem;
 	caret-color: ${({ $prompt }) => ($prompt ? 'transparent' : 'initial')};
 	${applyMargin()};
+`;
+
+export const WhiteButton = styled(Button)`
+	display: block;
+	background-color: white;
+	color: #333;
 `;
 
 const TextAreaContainer = styled.div`
@@ -179,5 +185,21 @@ export const Option = styled.option``;
 export const ErrorText = styled.p`
 	color: red;
 	font-size: 0.8rem;
+	margin-top: 5px;
+`;
+
+export const ListItem = styled.li`
+	line-height: 2rem;
+`;
+
+export function List({ ordered, children }) {
+	const ListWrapper = styled[ordered ? 'ol' : 'ul']`
+		padding-left: 25px;
+	`;
+	return <ListWrapper>{children}</ListWrapper>;
+}
+
+export const SubText = styled(Paragraph)`
+	font-size: 0.75rem;
 	margin-top: 5px;
 `;

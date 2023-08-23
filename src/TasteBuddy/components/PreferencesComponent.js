@@ -3,16 +3,18 @@ import styled from 'styled-components';
 import { getPreferences, savePreferences } from '../localStorage';
 import Modal from './Modal';
 import preferenceOptions from '../preference-options';
-import { Input } from '../styles';
+import { Dropdown, Input, Option, Paragraph, WhiteButton } from '../styles';
 
 const PreferencesContainer = styled.div`
 	width: 100%;
+	margin-top: ${({ $condensed }) => ($condensed ? '0' : '1rem')};
 `;
 
 const SectionHeader = styled.h2`
 	color: white;
 	font-size: 1.5rem;
 	margin-bottom: 10px;
+	margin-top: 0;
 `;
 
 const Section = styled.div`
@@ -20,8 +22,8 @@ const Section = styled.div`
 	width: 100%;
 	background-color: #333;
 	border-radius: 8px;
-	padding: 10px 10px 0px 10px;
-	margin-bottom: 20px;
+	padding: ${({ $condensed }) => ($condensed ? '1rem 0' : '1rem')};
+	margin-bottom: ${({ $condensed }) => ($condensed ? '0' : '20px')};
 `;
 
 const ItemList = styled.ul`
@@ -79,7 +81,7 @@ const StyledCheckbox = styled.input`
 	background-color: #333; /* Background color for dark theme */
 `;
 
-export default function PreferencesComponent({ onUpdate }) {
+export default function PreferencesComponent({ onUpdate, condensed }) {
 	const [preferences, setPreferences] = useState(getPreferences());
 	const [{ category, selectionMap }, setEditCategorySelections] = useState({});
 	const [searchText, setSearchText] = useState('');
@@ -136,17 +138,38 @@ export default function PreferencesComponent({ onUpdate }) {
 		return selectionMap[item]; // Show only selected items when checkbox is checked
 	};
 
+	const sections = [
+		{ name: 'Allergies', propertyName: 'allergies', data: preferences.allergies },
+		{ name: 'Likes', propertyName: 'likes', data: preferences.likes },
+		{ name: 'Dislikes', propertyName: 'dislikes', data: preferences.dislikes },
+	];
+
 	return (
-		<PreferencesContainer>
-			<Modal isOpen={category} header={`Select your ${category}`} onClose={handleCloseEditMode} closeText='Save'>
+		<PreferencesContainer $condensed={condensed}>
+			<Modal isOpen={category} header='Preferences' onClose={handleCloseEditMode} closeText='Save'>
+				<Dropdown value={category} onChange={({ target }) => handleAddMoreClick(target.value)}>
+					{sections.map(({ name, propertyName }) => (
+						<Option value={propertyName}>{name}</Option>
+					))}
+				</Dropdown>
+
 				<Input
 					type='text'
 					placeholder='Search items or add new...'
 					value={searchText}
 					onChange={(e) => setSearchText(e.target.value)}
+					mt='1rem'
 				/>
+
 				{!searchHasExactMatch && (
-					<CustomOptionButton onClick={handleAddSearchClick}>+ Add {searchText}</CustomOptionButton>
+					<div>
+						<Paragraph mb='1rem'>
+							TasteBuddy provides some basic options but please add anything that's missing.
+						</Paragraph>
+						<WhiteButton fullWidth onClick={handleAddSearchClick}>
+							+ Add {searchText}
+						</WhiteButton>
+					</div>
 				)}
 
 				<StyledLabel>
@@ -168,35 +191,16 @@ export default function PreferencesComponent({ onUpdate }) {
 				)}
 			</Modal>
 
-			<Section>
-				<SectionHeader>Allergies</SectionHeader>
-				<ItemList>
-					{preferences.allergies.map((item) => (
-						<Item>{item}</Item>
-					))}
-					<AddMoreButton onClick={() => handleAddMoreClick('allergies')}>Edit Items</AddMoreButton>
-				</ItemList>
-			</Section>
+			<WhiteButton fullWidth onClick={() => handleAddMoreClick('allergies')} mb={condensed ? '' : '1rem'}>
+				Edit Selections
+			</WhiteButton>
 
-			<Section>
-				<SectionHeader>Likes</SectionHeader>
-				<ItemList>
-					{preferences.likes.map((item) => (
-						<Item>{item}</Item>
-					))}
-					<AddMoreButton onClick={() => handleAddMoreClick('likes')}>Edit Items</AddMoreButton>
-				</ItemList>
-			</Section>
-
-			<Section>
-				<SectionHeader>Dislikes</SectionHeader>
-				<ItemList>
-					{preferences.dislikes.map((item) => (
-						<Item>{item}</Item>
-					))}
-					<AddMoreButton onClick={() => handleAddMoreClick('dislikes')}>Edit Items</AddMoreButton>
-				</ItemList>
-			</Section>
+			{sections.map(({ name, data }) => (
+				<Section $condensed={condensed}>
+					<SectionHeader>{name}</SectionHeader>
+					{data.length ? data.join(', ') : 'Nothing selected'}
+				</Section>
+			))}
 		</PreferencesContainer>
 	);
 }
