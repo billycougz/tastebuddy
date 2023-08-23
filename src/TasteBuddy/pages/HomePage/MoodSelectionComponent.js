@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { searchMenu } from '../../api';
 import LoadingComponent from '../../components/LoadingComponent';
 import { PageContainer, TextArea, Button, Dropdown, Option, ErrorText } from '../../styles';
+import { isDevelopment } from '../../utils';
 
 const DetailText = styled.p`
 	margin: 0;
@@ -56,6 +57,21 @@ export default function MoodSelectionComponent({
 		setIsLoading(false);
 	};
 
+	const handleMockSearch = () => {
+		onSearchResults({
+			message: 'Here is a massive list of options:',
+			menuIds: processedMenuIds,
+			results: [
+				{
+					name: 'Beef Wellington',
+					description:
+						'A steak dish of English origin, made out of fillet steak coated with pâté and duxelles, wrapped in puff pastry, then baked.',
+					reason: 'You love Beef Wellington!',
+				},
+			],
+		});
+	};
+
 	const handleCategoryChange = (e) => {
 		setErrors({});
 		setSelectedCategory(e.target.value);
@@ -82,6 +98,7 @@ export default function MoodSelectionComponent({
 			<Button $disabledStyle={!selectedCategory} onClick={handleSearch}>
 				{moodInputValue ? 'Search Menu' : 'Surprise Me'}
 			</Button>
+			{isDevelopment() && <Button onClick={handleMockSearch}>Mock Search</Button>}
 			<DetailText>
 				TasteBuddy always considers your <button onClick={() => setShowPreferences(true)}>preferences</button>.
 			</DetailText>
