@@ -79,7 +79,9 @@ function StandaloneContent() {
 	return (
 		<div>
 			<Heading2>TasteBuddy App</Heading2>
-			<Paragraph>Congratulations! You are running TasteBuddy with the optimal experience.</Paragraph>
+			<Paragraph>
+				Congratulations! You've enabled the best TasteBuddy experience by adding the app to your Home Screen.
+			</Paragraph>
 		</div>
 	);
 }

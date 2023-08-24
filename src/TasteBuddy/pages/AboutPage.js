@@ -18,7 +18,7 @@ import {
 	InputWithIcon,
 } from '../styles';
 import AlertModal from '../components/AlertModal';
-import { useAppVersion } from '../utils';
+import { isMobile, isStandalone, useAppVersion } from '../utils';
 import FeedbackModal from '../components/FeedbackModal';
 import UserProfile from '../components/UserProfile';
 
@@ -55,7 +55,6 @@ export default function AboutPage() {
 					</Paragraph>
 					<Paragraph>Try TasteBuddy at a restaurant, brewery, or anywhere that sells food and drinks.</Paragraph>
 				</Section>
-
 				<Section>
 					<Card>
 						<Heading2>TasteBuddy Beta</Heading2>
@@ -63,7 +62,6 @@ export default function AboutPage() {
 						<Paragraph>See below for what this means for you and the progression of the app.</Paragraph>
 					</Card>
 				</Section>
-
 				<Section>
 					<Card>
 						<Heading3>App & Browsers</Heading3>
@@ -71,36 +69,49 @@ export default function AboutPage() {
 							Eventually TasteBuddy will have native iOS & Android apps but the current version of TasteBuddy runs
 							within the browser.
 						</Paragraph>
-						<Paragraph>
-							<strong>Desktop: </strong>While TasteBuddy should be fully functional on desktop devices, it is designed
-							for mobile and the desktop experience will likely look and feel subpar.
-						</Paragraph>
-						<Paragraph>
-							<strong>Mobile: </strong>User experience quality can vary by browser. It is recommended to avoid using
-							Safari, and for the best experience add TasteBuddy to your Home Screen.
-							<WhiteButton mt='1rem' fullWidth onClick={() => setShowInstallSteps(true)}>
-								Add TasteBuddy to your Home Screen
-							</WhiteButton>
-							{showInstallSteps && <AlertModal type='mobile' hideDisable onClose={() => setShowInstallSteps(false)} />}
-						</Paragraph>
+						{!isStandalone() && (
+							<>
+								{!isMobile() && (
+									<Paragraph>
+										<strong>Desktop Notice: </strong>While TasteBuddy can be used on desktop devices, it is designed for
+										mobile and the desktop experience will likely look and feel subpar.
+									</Paragraph>
+								)}
+								{isMobile() && (
+									<Paragraph>
+										Add TasteBuddy to your Home Screen for the best experience.
+										<WhiteButton mt='1rem' fullWidth onClick={() => setShowInstallSteps(true)}>
+											Add TasteBuddy to your Home Screen
+										</WhiteButton>
+										{showInstallSteps && (
+											<AlertModal type='mobile' hideDisable onClose={() => setShowInstallSteps(false)} />
+										)}
+									</Paragraph>
+								)}
+							</>
+						)}
+						{isStandalone() && (
+							<Paragraph>
+								You've enabled the best TasteBuddy experience by adding the app to your Home Screen.
+							</Paragraph>
+						)}
 					</Card>
 				</Section>
 
 				<Section>
 					<Card>
 						<Heading3>Accounts & Data</Heading3>
+						<Paragraph>The current version of TasteBuddy does not require you to create an account.</Paragraph>
 						<Paragraph>
-							The current version of TasteBuddy does not require you to create an account. Your TasteBuddy data, such as
-							your preferences and review history, is all stored within your browser. If you use multiple browsers, each
-							will have a separate set of data.
+							Your TasteBuddy data, such as your preferences and review history, is all stored within your browser. If
+							you use multiple browsers, each will have a separate set of data.
 						</Paragraph>
-						<Paragraph>
+						{/* <Paragraph>
 							You can optionally provide your info enabling me to contact you for feedback.
 							<UserProfile />
-						</Paragraph>
+						</Paragraph> */}
 					</Card>
 				</Section>
-
 				<Section>
 					<Card>
 						<Heading3>Feedback & Questions</Heading3>
@@ -111,7 +122,7 @@ export default function AboutPage() {
 								<ListItem>Suggest a UX change</ListItem>
 								<ListItem>Request a feature</ListItem>
 								<ListItem>Ask a question</ListItem>
-								<ListItem>Provide general Feedback</ListItem>
+								<ListItem>Provide general feedback</ListItem>
 							</List>
 						</Paragraph>
 						<WhiteButton fullWidth onClick={() => setShowFeedbackModal(true)}>

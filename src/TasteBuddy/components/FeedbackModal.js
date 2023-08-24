@@ -19,9 +19,11 @@ import { postFeedback } from '../api';
 import { getUserProfile } from '../localStorage';
 
 export default function FeedbackModal({ isOpen, onClose }) {
-	const [feedback, setFeedback] = useState({ message: '', ...getUserProfile() });
+	const emptyFeedback = { message: '', ...getUserProfile() };
+	const [feedback, setFeedback] = useState(emptyFeedback);
 	const [error, setError] = useState(''); // 'message' | ''
 	const [success, setSuccess] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubmit = async () => {
 		if (!feedback.message) {
@@ -29,10 +31,12 @@ export default function FeedbackModal({ isOpen, onClose }) {
 			return;
 		}
 		try {
+			setIsLoading(true);
 			const response = await postFeedback(feedback);
 		} catch (e) {
 			// ToDo
 		}
+		setIsLoading(false);
 		setFeedback({ ...feedback, message: '' });
 		setSuccess(true);
 	};
@@ -46,8 +50,15 @@ export default function FeedbackModal({ isOpen, onClose }) {
 		setFeedback({ ...feedback, message });
 	};
 
+	const handleClose = () => {
+		setError('');
+		setSuccess(false);
+		setFeedback(emptyFeedback);
+		onClose();
+	};
+
 	return (
-		<Modal header='Feedback & Questions' isOpen={isOpen} onClose={onClose}>
+		<Modal header='Feedback & Questions' isOpen={isOpen} onClose={handleClose}>
 			<Paragraph>Your feedback will be received immediately!</Paragraph>
 			<Paragraph>Provide your name and contact info if you're open to be contacted for additional feedback.</Paragraph>
 			{success && (
@@ -57,6 +68,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 			)}
 			<FlexContainer mt='1rem'>
 				<TextArea
+					disabled={isLoading}
 					onChange={handleMessageChange}
 					value={feedback.message}
 					placeholder='Bugs, UX, features, questions, general feedback...'
@@ -64,6 +76,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 				/>
 				{error === 'message' && <ErrorText>It doesn't appear you've written anything.</ErrorText>}
 				<Input
+					disabled={isLoading}
 					onChange={(e) => setFeedback({ ...feedback, name: e.target.value })}
 					value={feedback.name}
 					type='text'
@@ -71,6 +84,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					lightBorder
 				/>
 				<Input
+					disabled={isLoading}
 					onChange={(e) => setFeedback({ ...feedback, contact: e.target.value })}
 					value={feedback.contact}
 					type='text'
@@ -78,7 +92,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					lightBorder
 				/>
 
-				<Button onClick={handleSubmit} fullWidth>
+				<Button onClick={handleSubmit} fullWidth disabled={isLoading}>
 					Submit
 				</Button>
 			</FlexContainer>

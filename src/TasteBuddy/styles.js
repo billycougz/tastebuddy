@@ -169,9 +169,10 @@ const ResizableTextArea = styled.textarea`
 	font-size: 1rem;
 	resize: none; /* Disable manual resizing */
 	overflow: hidden; /* Hide overflowing content */
+	opacity: ${({ $disabledStyle, disabled }) => ($disabledStyle || disabled ? 0.5 : 1)};
 `;
 
-export const TextArea = ({ placeholder, lightBorder, value, onChange }) => {
+export const TextArea = ({ placeholder, lightBorder, value, onChange, $disabledStyle, disabled }) => {
 	const handleChange = (event) => {
 		onChange(event);
 		// Automatically adjust the height based on content
@@ -182,6 +183,8 @@ export const TextArea = ({ placeholder, lightBorder, value, onChange }) => {
 	return (
 		<TextAreaContainer>
 			<ResizableTextArea
+				$disabledStyle={$disabledStyle}
+				disabled={disabled}
 				lightBorder={lightBorder}
 				value={value}
 				onChange={handleChange}
