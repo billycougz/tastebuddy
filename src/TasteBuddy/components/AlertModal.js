@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Heading2, List, Paragraph, SubText } from '../styles';
+import { Button, Heading2, List, Paragraph, SubText, WhiteButton } from '../styles';
 import localStorage, { getPreferences } from '../localStorage';
 import { isAndroid, isMobile, isStandalone } from '../utils';
 import PreferencesComponent from './PreferencesComponent';
 import { GoShare } from 'react-icons/go';
 import { BsPlusSquare } from 'react-icons/bs';
 import AndroidInstallButton from './AndroidInstallButton';
+import FeedbackModal from './FeedbackModal';
 
 const ModalBackdrop = styled.div`
 	position: fixed;
@@ -174,20 +175,27 @@ function IntroEndContent() {
 	);
 }
 
-function SearchErrorContent() {
-	return (
-		<div>
-			<Heading2>Something went wrong.</Heading2>
-			<Paragraph>Please try again. If the issue persists, please report it.</Paragraph>
-		</div>
-	);
-}
-
 const newUserSegments = [IntroContent, BrowserContent, PreferenceContent, IntroEndContent];
 
 const AlertModal = ({ type, onClose, hideDisable }) => {
 	const [disableAlert, setDisableAlert] = useState(false);
 	const [segmentIndex, setSegmentIndex] = useState(0);
+	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
+	function SearchErrorContent() {
+		return (
+			<div>
+				<Heading2>Something went wrong.</Heading2>
+				<Paragraph>
+					Please try again and report the issue if it persist.
+					<br />
+					<WhiteButton fullWidth mt='1rem' onClick={() => setShowFeedbackModal(true)}>
+						Report
+					</WhiteButton>
+				</Paragraph>
+			</div>
+		);
+	}
 
 	const handleClose = () => {
 		if (disableAlert) {
@@ -227,6 +235,7 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 
 	return (
 		<ModalBackdrop>
+			<FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
 			<ModalContent>
 				{type === 'mobile' && <MobileContent />}
 				{type === 'desktop' && <DesktopContent />}

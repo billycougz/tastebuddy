@@ -13,6 +13,8 @@ import {
 	Paragraph,
 	ScrollContainer,
 	TextArea,
+	List,
+	ListItem,
 } from '../styles';
 import Modal from './Modal';
 import { postFeedback } from '../api';
@@ -59,13 +61,18 @@ export default function FeedbackModal({ isOpen, onClose }) {
 
 	return (
 		<Modal header='Feedback & Questions' isOpen={isOpen} onClose={handleClose}>
-			<Paragraph>Your feedback will be received immediately!</Paragraph>
-			<Paragraph>Provide your name and contact info if you're open to be contacted for additional feedback.</Paragraph>
-			{success && (
-				<Paragraph color='green'>
-					Your feedback was submitted! Send another message now or anytime you think of something.
-				</Paragraph>
-			)}
+			<Paragraph>
+				Your feedback is appreciated and will be received immediately! Provide as much detail as you'd like.
+			</Paragraph>
+			<List>
+				<ListItem>Report a bug or inaccurate data</ListItem>
+				<ListItem>Suggest a UX change</ListItem>
+				<ListItem>Request a feature</ListItem>
+				<ListItem>Ask a question</ListItem>
+				<ListItem>Provide general feedback</ListItem>
+			</List>
+			<Paragraph>Provide your name and contact info if you're open to being contacted for more info.</Paragraph>
+
 			<FlexContainer mt='1rem'>
 				<TextArea
 					disabled={isLoading}
@@ -95,6 +102,11 @@ export default function FeedbackModal({ isOpen, onClose }) {
 				<Button onClick={handleSubmit} fullWidth disabled={isLoading}>
 					Submit
 				</Button>
+				{success && (
+					<Paragraph color='green' mt='0' style={{ textAlign: 'center' }}>
+						Your feedback was submitted! Send another message now or anytime you think of something.
+					</Paragraph>
+				)}
 			</FlexContainer>
 		</Modal>
 	);

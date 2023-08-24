@@ -118,7 +118,7 @@ export default function AboutPage() {
 						<Paragraph>
 							Submit your feedback directly through the app and optionally provide your contact info.
 							<List>
-								<ListItem>Report a bug</ListItem>
+								<ListItem>Report a bug or inaccurate data</ListItem>
 								<ListItem>Suggest a UX change</ListItem>
 								<ListItem>Request a feature</ListItem>
 								<ListItem>Ask a question</ListItem>
