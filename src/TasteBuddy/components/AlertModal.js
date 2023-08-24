@@ -187,7 +187,7 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 			<div>
 				<Heading2>Something went wrong.</Heading2>
 				<Paragraph>
-					Please try again and report the issue if it persist.
+					Please try again and report the issue if it persists.
 					<br />
 					<WhiteButton fullWidth mt='1rem' onClick={() => setShowFeedbackModal(true)}>
 						Report
