@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { getPreferences, savePreferences } from '../localStorage';
+import { PreferencesContext } from './PreferencesProvider';
 import Modal from './Modal';
 import preferenceOptions from '../preference-options';
-import { Dropdown, Input, Option, Paragraph, WhiteButton } from '../styles';
+import { Dropdown, Input, Option, Paragraph, WhiteButton, Button } from '../styles';
 
 const PreferencesContainer = styled.div`
 	width: 100%;
@@ -33,12 +33,12 @@ const ItemList = styled.ul`
 `;
 
 const Item = styled.li`
-	padding: 5px 0;
+	padding: 10px;
 	border-bottom: ${({ isLast }) => (isLast ? 'none' : '1px solid #555')};
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
+	background-color: ${({ isSelected }) => (isSelected ? '#999' : 'initial')};
 	&::after {
 		content: ${({ isSelected }) => (isSelected ? '"\\2713"' : 'none')};
 		padding-right: 5px;
@@ -68,7 +68,7 @@ const CustomOptionButton = styled.button`
 const StyledLabel = styled.label`
 	display: flex;
 	align-items: center;
-	margin-top: 10px;
+	margin: 10px 0;
 	color: #ffffff; /* Text color for dark theme */
 	font-size: 14px;
 `;
@@ -81,61 +81,62 @@ const StyledCheckbox = styled.input`
 	background-color: #333; /* Background color for dark theme */
 `;
 
-export default function PreferencesComponent({ onUpdate, condensed }) {
-	const [preferences, setPreferences] = useState(getPreferences());
-	const [{ category, selectionMap }, setEditCategorySelections] = useState({});
+const createEditPreferencesMap = (preferences) => {
+	const categories = Object.keys(preferences);
+	const optionMap = preferenceOptions.reduce((map, option) => {
+		return { ...map, [option]: false };
+	}, {});
+	return categories.reduce((categoryMap, category) => {
+		const categorySelectionMap = preferences[category].reduce((selectionMap, selection) => {
+			return { ...selectionMap, [selection]: true };
+		}, optionMap);
+		return { ...categoryMap, [category]: categorySelectionMap };
+	}, {});
+};
+
+/**
+ * @param {boolean} condensed removes margin/padding for condensed view
+ */
+export default function PreferencesComponent({ condensed }) {
+	const { preferences, updatePreferences } = useContext(PreferencesContext);
+	const [selectedCategory, setSelectedCategory] = useState('');
+	const [editPreferencesMap, setEditPreferencesMap] = useState(createEditPreferencesMap(preferences));
 	const [searchText, setSearchText] = useState('');
 	const [onlySelected, setOnlySelected] = useState(false);
 
-	const flatPreferences = Object.keys(selectionMap || {}).map((item) => item);
-	const preferenceOptionMap = [...preferenceOptions, ...flatPreferences].reduce(
-		(map, option) => ({ ...map, [option.toLowerCase()]: true }),
-		{}
-	);
+	useEffect(() => {
+		// ToDo - handle better
+		setEditPreferencesMap(createEditPreferencesMap(preferences));
+	}, [preferences]);
 
-	const allPreferenceOptions = Object.keys(preferenceOptionMap).sort();
-
-	const handleAddMoreClick = (category) => {
-		const selections = preferences[category];
-		const selectionMap = selections.reduce((map, item) => ({ ...map, [item]: true }), {});
-		setEditCategorySelections({
-			category,
-			selectionMap,
-		});
-	};
+	const currentCategoryOptions = editPreferencesMap[selectedCategory];
 
 	const handleItemClick = (item) => {
-		const isSelected = !selectionMap[item];
-		setEditCategorySelections({ category, selectionMap: { ...selectionMap, [item]: isSelected } });
-		setSearchText('');
-	};
-
-	const handleAddSearchClick = () => {
-		const item = searchText.toLowerCase();
-		setEditCategorySelections({ category, selectionMap: { ...selectionMap, [item]: true } });
+		const updatedCategorySelections = { ...currentCategoryOptions, [item]: !currentCategoryOptions[item] };
+		setEditPreferencesMap({ ...editPreferencesMap, [selectedCategory]: updatedCategorySelections });
 		setSearchText('');
 	};
 
 	const handleCloseEditMode = () => {
-		const selections = Object.entries(selectionMap)
-			.filter(([item, isSelected]) => isSelected)
-			.map(([item]) => item);
-		const updatedPreferences = { ...preferences, [category]: selections };
-		savePreferences(updatedPreferences);
-		onUpdate(updatedPreferences);
-		setPreferences(updatedPreferences);
+		const categories = Object.keys(preferences);
+		const updatedPreferences = categories.reduce((map, category) => {
+			const categoryOptionMap = editPreferencesMap[category];
+			const categorySelections = Object.keys(categoryOptionMap).filter((option) => categoryOptionMap[option]);
+			return { ...map, [category]: categorySelections };
+		}, {});
+		updatePreferences(updatedPreferences);
 		setSearchText('');
-		setEditCategorySelections({});
+		setSelectedCategory('');
 	};
 
 	const applySearchFilter = (item) => item.toLowerCase().includes(searchText.toLowerCase());
 
-	const searchHasExactMatch = !searchText || (searchText && preferenceOptionMap[searchText.toLowerCase()]);
+	const searchHasExactMatch = !searchText || (searchText && currentCategoryOptions[searchText.toLowerCase()]);
 	const applySelectionFilter = (item) => {
 		if (!onlySelected) {
 			return true; // Show all items when checkbox is not checked
 		}
-		return selectionMap[item]; // Show only selected items when checkbox is checked
+		return currentCategoryOptions[item]; // Show only selected items when checkbox is checked
 	};
 
 	const sections = [
@@ -146,8 +147,8 @@ export default function PreferencesComponent({ onUpdate, condensed }) {
 
 	return (
 		<PreferencesContainer $condensed={condensed}>
-			<Modal isOpen={category} header='Preferences' onClose={handleCloseEditMode} closeText='Save'>
-				<Dropdown value={category} onChange={({ target }) => handleAddMoreClick(target.value)}>
+			<Modal isOpen={selectedCategory} header='Preferences' onClose={handleCloseEditMode} closeText='Save'>
+				<Dropdown value={selectedCategory} onChange={({ target }) => setSelectedCategory(target.value)}>
 					{sections.map(({ name, propertyName }) => (
 						<Option value={propertyName}>{name}</Option>
 					))}
@@ -155,43 +156,43 @@ export default function PreferencesComponent({ onUpdate, condensed }) {
 
 				<Input
 					type='text'
-					placeholder='Search items or add new...'
+					placeholder='Search items or add custom value...'
 					value={searchText}
 					onChange={(e) => setSearchText(e.target.value)}
 					mt='1rem'
 				/>
-
-				{!searchHasExactMatch && (
-					<div>
-						<Paragraph mb='1rem'>
-							TasteBuddy provides some basic options but please add anything that's missing.
-						</Paragraph>
-						<WhiteButton fullWidth onClick={handleAddSearchClick}>
-							+ Add {searchText}
-						</WhiteButton>
-					</div>
-				)}
 
 				<StyledLabel>
 					<StyledCheckbox type='checkbox' checked={onlySelected} onChange={() => setOnlySelected(!onlySelected)} />
 					Show only selected items
 				</StyledLabel>
 
-				{selectionMap && (
+				{currentCategoryOptions && (
 					<ItemList>
-						{allPreferenceOptions
+						{Object.keys(currentCategoryOptions)
 							.filter(applySearchFilter)
 							.filter(applySelectionFilter)
 							.map((item) => (
-								<Item onClick={() => handleItemClick(item)} isSelected={selectionMap[item]}>
+								<Item onClick={() => handleItemClick(item)} isSelected={currentCategoryOptions[item]}>
 									{item}
 								</Item>
 							))}
 					</ItemList>
 				)}
+
+				{!searchHasExactMatch && (
+					<div>
+						<Paragraph mb='1rem'>
+							TasteBuddy provides some basic options but click the button below to add a custom value.
+						</Paragraph>
+						<Button fullWidth onClick={() => handleItemClick(searchText.toLowerCase())}>
+							+ Add {searchText}
+						</Button>
+					</div>
+				)}
 			</Modal>
 
-			<WhiteButton fullWidth onClick={() => handleAddMoreClick('allergies')} mb={condensed ? '' : '1rem'}>
+			<WhiteButton fullWidth onClick={() => setSelectedCategory('allergies')} mb={condensed ? '' : '1rem'}>
 				Edit Selections
 			</WhiteButton>
 

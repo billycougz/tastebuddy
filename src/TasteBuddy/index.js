@@ -8,6 +8,7 @@ import AlertModal from './components/AlertModal';
 import localStorage, { storeFeedbackGroup } from './localStorage';
 import { isBrowser, isMobile } from './utils';
 import PreferencesComponent from './components/PreferencesComponent';
+import PreferencesProvider from './components/PreferencesProvider';
 
 const AppContainer = styled.div`
 	background-color: #1a1a1a;
@@ -31,16 +32,18 @@ export default function TasteBuddy() {
 	}, []);
 
 	return (
-		<AppContainer>
-			{showAlertType && <AlertModal type={showAlertType} onClose={() => setShowAlertType('')} />}
-			{!showAlertType && showPreferences && <PreferencesComponent />}
-			<Main>
-				<HomePage isVisible={view === 'home-page'} setView={setView} />
-				{view === 'history-page' && <HistoryPage />}
-				{view === 'about-page' && <AboutPage />}
-			</Main>
-			<Nav view={view} onChange={setView} />
-		</AppContainer>
+		<PreferencesProvider>
+			<AppContainer>
+				{showAlertType && <AlertModal type={showAlertType} onClose={() => setShowAlertType('')} />}
+				{!showAlertType && showPreferences && <PreferencesComponent />}
+				<Main>
+					<HomePage isVisible={view === 'home-page'} setView={setView} />
+					{view === 'history-page' && <HistoryPage />}
+					{view === 'about-page' && <AboutPage />}
+				</Main>
+				<Nav view={view} onChange={setView} />
+			</AppContainer>
+		</PreferencesProvider>
 	);
 }
 

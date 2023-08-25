@@ -15,6 +15,7 @@ import {
 	TextArea,
 	List,
 	ListItem,
+	WhiteButton,
 } from '../styles';
 import Modal from './Modal';
 import { postFeedback } from '../api';
@@ -99,9 +100,9 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					lightBorder
 				/>
 
-				<Button onClick={handleSubmit} fullWidth disabled={isLoading}>
+				<WhiteButton onClick={handleSubmit} fullWidth disabled={isLoading}>
 					Submit
-				</Button>
+				</WhiteButton>
 				{success && (
 					<Paragraph color='green' mt='0' style={{ textAlign: 'center' }}>
 						Your feedback was submitted! Send another message now or anytime you think of something.

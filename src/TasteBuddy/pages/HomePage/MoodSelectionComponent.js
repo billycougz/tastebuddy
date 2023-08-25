@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { searchMenu } from '../../api';
 import LoadingComponent from '../../components/LoadingComponent';
-import { PageContainer, TextArea, Button, Dropdown, Option, ErrorText } from '../../styles';
+import { PageContainer, TextArea, Button, Dropdown, Option, ErrorText, WhiteButton } from '../../styles';
 import { isDevelopment } from '../../utils';
+import { getPreferences } from '../../localStorage';
 
 const DetailText = styled.p`
+	text-align: ${({ align }) => align || 'initial'};
 	margin: 0;
 	font-size: 0.875rem;
 	> button {
@@ -23,7 +25,6 @@ export default function MoodSelectionComponent({
 	onSearchError,
 	onSearchResults,
 	processedMenuIds,
-	preferences,
 	setShowPreferences,
 }) {
 	const [selectedCategory, setSelectedCategory] = useState('');
@@ -42,7 +43,7 @@ export default function MoodSelectionComponent({
 				category: selectedCategory,
 				menuIds: processedMenuIds,
 				mood: moodInputValue,
-				preferences,
+				preferences: getPreferences(), // Keep an eye on this
 			});
 			if (response.error) {
 				onSearchError(response.error);
@@ -91,16 +92,17 @@ export default function MoodSelectionComponent({
 			</Dropdown>
 			{errors.category && <ErrorText>Please select a category before searching.</ErrorText>}
 			<TextArea
-				placeholder='Are you in the mood for anything?'
+				placeholder='What are you in the mood for? Leave this blank to search using preferences only.'
 				value={moodInputValue}
 				onChange={(e) => setMoodInputValue(e.target.value)}
 			/>
-			<Button $disabledStyle={!selectedCategory} onClick={handleSearch}>
+			<WhiteButton fullWidth $disabledStyle={!selectedCategory} onClick={handleSearch}>
 				{moodInputValue ? 'Search Menu' : 'Surprise Me'}
-			</Button>
+			</WhiteButton>
 			{isDevelopment() && <Button onClick={handleMockSearch}>Mock Search</Button>}
-			<DetailText>
-				TasteBuddy always considers your <button onClick={() => setShowPreferences(true)}>preferences</button>.
+			<DetailText align='center'>
+				Regardless of your mood, TasteBuddy always considers your{' '}
+				<button onClick={() => setShowPreferences(true)}>preferences</button>.
 			</DetailText>
 		</PageContainer>
 	);

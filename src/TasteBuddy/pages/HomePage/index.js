@@ -5,7 +5,7 @@ import MoodSelectionComponent from './MoodSelectionComponent';
 import ResultsComponent from './ResultsComponent';
 import Menu from '../../components/Menu';
 import PreferencesComponent from '../../components/PreferencesComponent';
-import localStorage, { getPreferences } from '../../localStorage';
+import localStorage from '../../localStorage';
 import Modal from '../../components/Modal';
 import { uploadMenu } from '../../api';
 import { PageContainer } from '../../styles';
@@ -21,7 +21,6 @@ export default function HomePage({ isVisible, setView }) {
 	const [showPreferences, setShowPreferences] = useState(false);
 	const [processedMenuIds, setProcessedMenuIds] = useState(null);
 	const [searchResults, setSearchResults] = useState(null);
-	const [preferences, setPreferences] = useState(getPreferences());
 	const [showAlertType, setShowAlertType] = useState('');
 	const [nearbyPlaces, setNearbyPlaces] = useState(null);
 
@@ -52,8 +51,12 @@ export default function HomePage({ isVisible, setView }) {
 	};
 
 	const uploadMenuAsync = async (files) => {
-		const s3Filenames = await uploadMenu(files);
-		setProcessedMenuIds(s3Filenames);
+		try {
+			const s3Filenames = await uploadMenu(files);
+			setProcessedMenuIds(s3Filenames);
+		} catch (e) {
+			handleSearchError(e);
+		}
 	};
 
 	function doDisplayLocationAlert() {
@@ -69,6 +72,7 @@ export default function HomePage({ isVisible, setView }) {
 	};
 
 	const handleSearchError = (error) => {
+		// ToDo: This is being used for more than just search error (i.e., upload error) - address this
 		setShowAlertType('searchError');
 		setStep('menu-selection');
 	};
@@ -89,7 +93,7 @@ export default function HomePage({ isVisible, setView }) {
 	return (
 		<Container isVisible={isVisible}>
 			<Modal isOpen={showPreferences} header='Preferences' onClose={() => setShowPreferences(false)}>
-				<PreferencesComponent preferences={preferences} onUpdate={setPreferences} />
+				<PreferencesComponent />
 			</Modal>
 
 			{showAlertType && <AlertModal type={showAlertType} hideDisable onClose={handleCloseLocationModal} />}
@@ -105,7 +109,6 @@ export default function HomePage({ isVisible, setView }) {
 					onSearchResults={handleMoodSelected}
 					processedMenuIds={processedMenuIds}
 					setShowPreferences={setShowPreferences}
-					preferences={preferences}
 				/>
 			)}
 			{step === 'result-selection' && (

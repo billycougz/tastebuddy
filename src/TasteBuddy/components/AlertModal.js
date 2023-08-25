@@ -160,7 +160,7 @@ function PreferenceContent() {
 			<Heading2>Preferences</Heading2>
 			<Paragraph>Help TasteBuddy build your taste profile by selecting your preferences.</Paragraph>
 			<PreferenceContainer>
-				<PreferencesComponent onUpdate={() => null} condensed />
+				<PreferencesComponent condensed />
 			</PreferenceContainer>
 		</>
 	);
@@ -189,6 +189,7 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 				<Paragraph>
 					Please try again and report the issue if it persists.
 					<br />
+					<input placeholder='Hacky solution to prevent button from autofocusing' hidden autoFocus />
 					<WhiteButton fullWidth mt='1rem' onClick={() => setShowFeedbackModal(true)}>
 						Report
 					</WhiteButton>

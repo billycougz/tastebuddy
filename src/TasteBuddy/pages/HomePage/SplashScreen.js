@@ -21,18 +21,30 @@ const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 	const handleMenuSelected = () => {
 		const inputElement = document.createElement('input');
 		inputElement.type = 'file';
-		inputElement.accept = 'image/*,.pdf';
+		// Accept whatever Textract accepts
+		inputElement.accept = 'image/png,image/jpeg,image/tiff,application/pdf';
 		inputElement.multiple = true;
 		inputElement.hidden = true;
 		const app = document.getElementById('___gatsby');
 		app.appendChild(inputElement);
 		inputElement.onchange = (e) => {
-			const files = Object.values(e.target.files);
-			onMenuSelected(files);
+			const files = Array.from(e.target.files);
+			if (allFilesSupported(files)) {
+				onMenuSelected(files);
+			} else {
+				const message = `It seems you've selected an unsupported file type.\n\nAt this time, TasteBuddy only supports PNG, JPG, PDF, and TIFF.\n\nTo use this file, you can simply upload a screenshot.`;
+				alert(message);
+			}
 			app.removeChild(inputElement);
 		};
 
 		inputElement.click();
+	};
+
+	const allFilesSupported = (files) => {
+		// iOS does not enforce allowed image types requiring explicit validation (not sure about Android)
+		const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf', 'image/tiff'];
+		return files.every((file) => allowedTypes.includes(file.type));
 	};
 
 	useEffect(() => {
