@@ -41,7 +41,7 @@ export default function MoodSelectionComponent({
 			const response = await searchMenu({
 				category: selectedCategory,
 				menuIds: processedMenuIds,
-				moodInputValue,
+				mood: moodInputValue,
 				preferences,
 			});
 			if (response.error) {

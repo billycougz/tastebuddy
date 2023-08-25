@@ -142,12 +142,6 @@ export default function ResultDetails({ nearbyPlaces, menuIds, result, onSave })
 						</Text>
 					)}
 
-					{result.price && (
-						<Text>
-							<Label>Menu Price:</Label> ${result.price}
-						</Text>
-					)}
-
 					<Button fullWidth onClick={handleOrderClick}>
 						Order This
 					</Button>

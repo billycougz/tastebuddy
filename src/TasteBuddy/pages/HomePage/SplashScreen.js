@@ -21,7 +21,7 @@ const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 	const handleMenuSelected = () => {
 		const inputElement = document.createElement('input');
 		inputElement.type = 'file';
-		inputElement.accept = 'image/*';
+		inputElement.accept = 'image/*,.pdf';
 		inputElement.multiple = true;
 		inputElement.hidden = true;
 		const app = document.getElementById('___gatsby');
