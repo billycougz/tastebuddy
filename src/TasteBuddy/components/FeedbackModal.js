@@ -79,7 +79,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					disabled={isLoading}
 					onChange={handleMessageChange}
 					value={feedback.message}
-					placeholder='Bugs, UX, features, questions, general feedback...'
+					placeholder='Your feedback...'
 					lightBorder
 				/>
 				{error === 'message' && <ErrorText>It doesn't appear you've written anything.</ErrorText>}
@@ -88,7 +88,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					onChange={(e) => setFeedback({ ...feedback, name: e.target.value })}
 					value={feedback.name}
 					type='text'
-					placeholder='Name'
+					placeholder='Your Name (optional)'
 					lightBorder
 				/>
 				<Input
@@ -96,7 +96,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					onChange={(e) => setFeedback({ ...feedback, contact: e.target.value })}
 					value={feedback.contact}
 					type='text'
-					placeholder='Email or phone'
+					placeholder='Your phone or email (optional)'
 					lightBorder
 				/>
 
