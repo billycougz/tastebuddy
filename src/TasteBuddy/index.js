@@ -6,9 +6,10 @@ import HistoryPage from './pages/HistoryPage';
 import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
 import localStorage, { storeFeedbackGroup } from './localStorage';
-import { isBrowser, isMobile } from './utils';
+import { isBrowser, isMobile, isStandalone } from './utils';
 import PreferencesComponent from './components/PreferencesComponent';
 import PreferencesProvider from './components/PreferencesProvider';
+import InlineAlert from './components/InlineAlert';
 
 const AppContainer = styled.div`
 	background-color: #1a1a1a;
@@ -26,10 +27,13 @@ export default function TasteBuddy() {
 	const [view, setView] = useState('home-page');
 	const [showAlertType, setShowAlertType] = useState(getOnLoadAlertType()); // '' | 'mobile' | 'desktop' | 'newUser'
 	const [showPreferences, setShowPreferences] = useState(false);
+	const [showInstallSteps, setShowInstallSteps] = useState(false);
 
 	useEffect(() => {
 		storeFeedbackGroup();
 	}, []);
+
+	const showBanner = !showAlertType && isMobile() && !isStandalone();
 
 	return (
 		<PreferencesProvider>
@@ -37,6 +41,13 @@ export default function TasteBuddy() {
 				{showAlertType && <AlertModal type={showAlertType} onClose={() => setShowAlertType('')} />}
 				{!showAlertType && showPreferences && <PreferencesComponent />}
 				<Main>
+					{showBanner && (
+						<InlineAlert type='warning' onClick={() => setShowInstallSteps(true)}>
+							<strong>Add to Home Screen</strong> for the best experience.
+						</InlineAlert>
+					)}
+
+					{showInstallSteps && <AlertModal type='mobile' hideDisable onClose={() => setShowInstallSteps(false)} />}
 					<HomePage isVisible={view === 'home-page'} setView={setView} />
 					{view === 'history-page' && <HistoryPage />}
 					{view === 'about-page' && <AboutPage />}
