@@ -15,11 +15,11 @@ export function isDevelopment() {
 }
 
 export function isMobile() {
-	return window.innerWidth <= 768;
+	return isBrowser() && window.innerWidth <= 768;
 }
 
 export function isStandalone() {
-	return window.matchMedia('(display-mode: standalone)').matches;
+	return isBrowser() && window.matchMedia('(display-mode: standalone)').matches;
 }
 
 export function isiOS() {
