@@ -211,12 +211,18 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 
 	const NewUserContent = newUserSegments[segmentIndex];
 
+	const nonStandaloneContent = {};
+
+	if (segmentIndex === 1 && !isStandalone()) {
+		nonStandaloneContent.alert = isMobile()
+			? `Continue without installing the app? The installation only takes a second.`
+			: 'Continue on desktop? Remember that mobile is the preferred experience.';
+		nonStandaloneContent.button = isMobile() ? 'Continue without app' : 'Continue on desktop';
+	}
+
 	const handleNextClick = () => {
-		if (segmentIndex === 1 && !isStandalone()) {
-			const message = isMobile()
-				? `Are you sure you don't want to install the app?`
-				: 'Are you sure you want to continue on desktop?';
-			const doContinue = window.confirm(message);
+		if (nonStandaloneContent.alert) {
+			const doContinue = window.confirm(nonStandaloneContent.alert);
 			if (!doContinue) {
 				return;
 			}
@@ -259,7 +265,7 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 
 				<ButtonContainer>
 					{showBack && <AlertButton onClick={() => setSegmentIndex(segmentIndex - 1)}>Back</AlertButton>}
-					{showNext && <AlertButton onClick={handleNextClick}>Next</AlertButton>}
+					{showNext && <AlertButton onClick={handleNextClick}>{nonStandaloneContent.button || 'Next'}</AlertButton>}
 					{!showNext && <AlertButton onClick={handleClose}>OK</AlertButton>}
 				</ButtonContainer>
 			</ModalContent>
