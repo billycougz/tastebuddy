@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import FeedbackModal from './FeedbackModal';
+import ManageData from './ManageData';
+import { isDevelopment } from '../utils';
 
 const DropdownContainer = styled.div`
 	position: fixed;
@@ -45,6 +47,8 @@ const DropdownMenuItem = styled.li`
 export default function Menu({ view, onViewChange, onShowPreferences }) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+	const [showManageStorageModal, setShowManageStorageModal] = useState(false);
+
 	const dropdownRef = useRef(null);
 
 	const toggleDropdown = () => {
@@ -101,8 +105,16 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 		},
 	];
 
+	if (isDevelopment()) {
+		menuItems.push({
+			label: 'Manage storage',
+			onClick: () => setShowManageStorageModal(true),
+		});
+	}
+
 	return (
 		<DropdownContainer ref={dropdownRef}>
+			{showManageStorageModal && <ManageData onClose={() => setShowManageStorageModal(false)} />}
 			<FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
 			<DropdownButton onClick={toggleDropdown}>...</DropdownButton>
 			<DropdownMenu isOpen={isDropdownOpen}>
