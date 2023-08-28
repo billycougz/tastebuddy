@@ -7,7 +7,6 @@ import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
 import localStorage, { updateUsageMetadata } from './localStorage';
 import { isBrowser, isMobile, isStandalone, useAppVersion } from './utils';
-import PreferencesComponent from './components/PreferencesComponent';
 import PreferencesProvider from './components/PreferencesProvider';
 import InlineAlert from './components/InlineAlert';
 
@@ -24,25 +23,23 @@ const Main = styled.main`
 `;
 
 export default function TasteBuddy() {
-	const appVersion = useAppVersion(); // ToDo: This is here because it also stores version in localStorage - handle better
+	const appVersion = useAppVersion();
 	const [view, setView] = useState('home-page');
 	const [showAlertType, setShowAlertType] = useState(getOnLoadAlertType()); // '' | 'mobile' | 'desktop' | 'newUser'
-	const [showPreferences, setShowPreferences] = useState(false);
 	const [showInstallSteps, setShowInstallSteps] = useState(false);
 
 	useEffect(() => {
 		updateUsageMetadata(appVersion);
 	}, []);
 
-	const showBanner = !showAlertType && isMobile() && !isStandalone();
+	const showStandaloneBanner = !showAlertType && isMobile() && !isStandalone();
 
 	return (
 		<PreferencesProvider>
 			<AppContainer>
 				{showAlertType && <AlertModal type={showAlertType} onClose={() => setShowAlertType('')} />}
-				{!showAlertType && showPreferences && <PreferencesComponent />}
 				<Main>
-					{showBanner && (
+					{showStandaloneBanner && (
 						<InlineAlert type='warning' onClick={() => setShowInstallSteps(true)}>
 							<strong>Add to Home Screen</strong> for the best experience.
 						</InlineAlert>
