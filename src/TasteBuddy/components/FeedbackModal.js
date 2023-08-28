@@ -19,7 +19,7 @@ import {
 } from '../styles';
 import Modal from './Modal';
 import { postFeedback } from '../api';
-import { getUserProfile } from '../localStorage';
+import { getUserProfile, updateUserProfile } from '../localStorage';
 
 export default function FeedbackModal({ isOpen, onClose }) {
 	const emptyFeedback = { message: '', ...getUserProfile() };
@@ -33,6 +33,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 			setError('message');
 			return;
 		}
+		updateUserProfile({ name: feedback.name, contact: feedback.contact });
 		try {
 			setIsLoading(true);
 			const response = await postFeedback(feedback);

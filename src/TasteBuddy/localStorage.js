@@ -4,6 +4,8 @@ const PREFERENCES_KEY = 'tastebuddy-preferences';
 const REVIEWS_KEY = 'tasebuddy-reviews';
 const FEEDBACK_GROUP_KEY = 'tastebuddy-fg';
 const USER_PROFILE_KEY = 'tastebuddy-user-profile';
+const VERSION_KEY = 'tastebuddy-version';
+const USAGE_METADATA_KEY = 'tastebuddy-usage-metadata';
 
 const mockLocalStorage = {
 	getItem: () => {},
@@ -72,8 +74,7 @@ export function isSameVersion() {
 }
 
 export function storeFeedbackGroup() {
-	const rawValue = localStorage.getItem(FEEDBACK_GROUP_KEY);
-	const groups = rawValue ? JSON.parse(rawValue) : [];
+	const groups = getFeedbackGroups();
 
 	const GATSBY_WINDOW = typeof window !== 'undefined' ? window : null;
 	if (GATSBY_WINDOW) {
@@ -97,4 +98,55 @@ export function storeFeedbackGroup() {
 	}
 	// ToDo: Address this, shouldn't be needed (Gatsby window...)
 	return null;
+}
+
+export function getFeedbackGroups() {
+	const rawValue = localStorage.getItem(FEEDBACK_GROUP_KEY);
+	return rawValue ? JSON.parse(localStorage.getItem(FEEDBACK_GROUP_KEY)) : [];
+}
+
+export function storeAppVersion(version) {
+	localStorage.setItem(VERSION_KEY, version);
+}
+
+// ToDo - handle better
+export function updateUsageMetadata(version) {
+	const data = getMetadata(true);
+	data.accessCount++;
+	localStorage.setItem(USAGE_METADATA_KEY, JSON.stringify(data));
+	storeFeedbackGroup();
+	storeAppVersion(version);
+	storeAppVersion(version);
+}
+
+// ToDo - handle better
+export function getMetadata(usageOnly) {
+	const rawValue = localStorage.getItem(USAGE_METADATA_KEY);
+	const usage = rawValue
+		? JSON.parse(rawValue)
+		: {
+				firstAccessed: Date.now(),
+				accessCount: 1,
+		  };
+	return usageOnly
+		? usage
+		: {
+				appVersion: getAppVersion(),
+				feedbackGroups: getFeedbackGroups(),
+				userProfile: getUserProfile(),
+				...usage,
+		  };
+}
+
+// ToDo - be careful with this - race condition - dependant on useAppVersion hook in utils
+export function getAppVersion() {
+	return localStorage.getItem(VERSION_KEY);
+}
+
+function getStoredValue(key, defaultValue, isJson) {
+	const rawValue = localStorage.getItem(key);
+	if (rawValue) {
+		return isJson ? JSON.parse(rawValue) : rawValue;
+	}
+	return defaultValue;
 }

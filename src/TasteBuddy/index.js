@@ -5,8 +5,8 @@ import AboutPage from './pages/AboutPage';
 import HistoryPage from './pages/HistoryPage';
 import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
-import localStorage, { storeFeedbackGroup } from './localStorage';
-import { isBrowser, isMobile, isStandalone } from './utils';
+import localStorage, { updateUsageMetadata } from './localStorage';
+import { isBrowser, isMobile, isStandalone, useAppVersion } from './utils';
 import PreferencesComponent from './components/PreferencesComponent';
 import PreferencesProvider from './components/PreferencesProvider';
 import InlineAlert from './components/InlineAlert';
@@ -24,13 +24,14 @@ const Main = styled.main`
 `;
 
 export default function TasteBuddy() {
+	const appVersion = useAppVersion(); // ToDo: This is here because it also stores version in localStorage - handle better
 	const [view, setView] = useState('home-page');
 	const [showAlertType, setShowAlertType] = useState(getOnLoadAlertType()); // '' | 'mobile' | 'desktop' | 'newUser'
 	const [showPreferences, setShowPreferences] = useState(false);
 	const [showInstallSteps, setShowInstallSteps] = useState(false);
 
 	useEffect(() => {
-		storeFeedbackGroup();
+		updateUsageMetadata(appVersion);
 	}, []);
 
 	const showBanner = !showAlertType && isMobile() && !isStandalone();

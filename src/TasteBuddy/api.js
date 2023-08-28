@@ -1,5 +1,6 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import { getMetadata } from './localStorage';
 
 axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
@@ -103,9 +104,23 @@ export async function postFeedback(feedback) {
 	const data = {
 		app: 'TasteBuddy',
 		...feedback,
+		...flattenObject(getMetadata()), // ToDo
 	};
 	const response = await axios.post(url, data);
 	if (response.data) {
 		return response.data;
 	}
+}
+
+// ToDo - Don't do this...
+function flattenObject(obj, prefix = '') {
+	return Object.keys(obj).reduce((acc, key) => {
+		const prop = prefix + key;
+		if (typeof obj[key] === 'object') {
+			Object.assign(acc, flattenObject(obj[key], prop + '.'));
+		} else {
+			acc[prop] = obj[key];
+		}
+		return acc;
+	}, {});
 }
