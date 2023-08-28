@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { AiFillInfoCircle } from 'react-icons/ai';
 
 const AlertContainer = styled.div`
 	// padding: 0.75rem 1.25rem;
@@ -7,6 +8,9 @@ const AlertContainer = styled.div`
 	margin-bottom: 1rem;
 	border: 1px solid transparent;
 	border-radius: 0.25rem;
+	display: flex;
+	align-items: center;
+	gap: 10px;
 `;
 
 const SuccessAlert = styled(AlertContainer)`
@@ -53,7 +57,12 @@ const InlineAlert = ({ content, type, children, onClick }) => {
 			AlertStyledComponent = AlertContainer;
 	}
 
-	return <AlertStyledComponent onClick={onClick}>{children || content}</AlertStyledComponent>;
+	return (
+		<AlertStyledComponent onClick={onClick}>
+			<AiFillInfoCircle />
+			{children || content}
+		</AlertStyledComponent>
+	);
 };
 
 export default InlineAlert;

@@ -41,7 +41,7 @@ export default function TasteBuddy() {
 				<Main>
 					{showStandaloneBanner && (
 						<InlineAlert type='warning' onClick={() => setShowInstallSteps(true)}>
-							<strong>Add to Home Screen</strong> for the best experience.
+							Tap to add to Home Screen
 						</InlineAlert>
 					)}
 
