@@ -4,10 +4,9 @@ import { getMetadata } from './localStorage';
 
 axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
-const __MOCK__ = false;
+const __MOCK__ = Boolean(process.env.MOCK_API_RESPONSE);
 
-// ToDo - handle environments
-const API_ENDPOINT = 'https://qanlacg4ic.execute-api.us-east-1.amazonaws.com/Prod/';
+const API_ENDPOINT = process.env.TASTEBUDDY_API_URL;
 
 /**
  * @param {*} files array files from a file input

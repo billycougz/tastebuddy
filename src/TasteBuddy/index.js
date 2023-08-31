@@ -30,6 +30,7 @@ export default function TasteBuddy() {
 
 	useEffect(() => {
 		updateUsageMetadata(appVersion);
+		console.log(process.env.MOCK_API_RESPONSE);
 	}, []);
 
 	const showStandaloneBanner = !showAlertType && isMobile() && !isStandalone();

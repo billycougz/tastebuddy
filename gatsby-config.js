@@ -1,6 +1,12 @@
-require('dotenv').config({
-	path: `.env.${process.env.NODE_ENV}`,
-});
+if (process.env.DEV) {
+	require('dotenv').config({
+		path: `.env.development`,
+	});
+} else {
+	require('dotenv').config({
+		path: `.env.${process.env.NODE_ENV}`,
+	});
+}
 
 /**
  * @type {import('gatsby').GatsbyConfig}
@@ -27,7 +33,7 @@ module.exports = {
 		{
 			resolve: 'gatsby-plugin-google-gtag',
 			options: {
-				trackingIds: [process.env.GA_MEASUREMENT_ID],
+				trackingIds: [process.env.GA_MEASUREMENT_ID || 'PROD_ONLY'],
 			},
 		},
 	],

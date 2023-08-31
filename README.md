@@ -1,49 +1,43 @@
 <p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
+  <a href="https://tastebuddy.williamcougan.com/">
+    <img alt="TasteBuddy" src="src/images/icon.jpg" width="60" />
   </a>
 </p>
 <h1 align="center">
-  Gatsby Minimal Starter
+  TasteBuddy <em>Web Frontend</em>
 </h1>
 
 ## 🚀 Quick start
 
-1.  **Create a Gatsby site.**
+## Env Config
 
-    Use the Gatsby CLI to create a new site, specifying the minimal starter.
+| Key                | .env.development                                        | .env.production |
+| ------------------ | ------------------------------------------------------- | --------------- |
+| GA_MEASUREMENT_ID  |                                                         | Get from GA     |
+| TASTEBUDDY_API_URL | Get from AWS                                            | Get from AWS    |
+| MOCK_API_RESPONSE  | Only provide if mocking, any value will resolve to true |                 |
 
-    ```shell
-    # create a new Gatsby site using the minimal starter
-    npm init gatsby
-    ```
+Shared Endpoints:
 
-2.  **Start developing.**
+- Places
+- Feedback
 
-    Navigate into your new site’s directory and start it up.
+## Scripts
 
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
+| Script      | Description                                         |
+| ----------- | --------------------------------------------------- |
+| `develop`   | Run dev server (w/ network)                         |
+| `start`     | Run dev server                                      |
+| `build`     | Build for prod (prod build w/ prod .env)            |
+| `build-dev` | Build for dev (prod build w/ dev .env)              |
+| `serve`     | Serve built artifact locally (w/ network)           |
+| `clean`     | Clean using Gatsby's clean command                  |
+| `deploy`    | Prod deploy (build for prod and deploy to gh-pages) |
 
-3.  **Open the code and start customizing!**
+- See [the Gatsby docs](https://www.gatsbyjs.com/docs/reference/gatsby-cli/#develop) for context around `develop` "w/ network"
+- See [the Gatsby docs](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/#additional-environments-staging-test-etc) for context around `build-dev` "prod build w/ dev .env"
 
-    Your site is now running at http://localhost:8000!
+Additional Reference:
 
-    Edit `src/pages/index.js` to see your site update in real-time!
-
-4.  **Learn more**
-
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Tutorials](https://www.gatsbyjs.com/docs/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Guides](https://www.gatsbyjs.com/docs/how-to/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-## 🚀 Quick start (Netlify)
-
-Deploy this starter with one click on [Netlify](https://app.netlify.com/signup):
-
-[<img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-minimal)
+- [Gatsby Commands](https://www.gatsbyjs.com/docs/reference/gatsby-cli/)
+- [GitHub Pages Command](https://github.com/tschaub/gh-pages)

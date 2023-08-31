@@ -1,4 +1,5 @@
 import axios from 'axios';
+import nearbyResponse from '../__mocks__/nearby-response';
 
 let CACHED_COORDINATES = {};
 const API_URL = 'https://gem7gutc6mwzchwotddzebsxu40boetu.lambda-url.us-east-1.on.aws/';
@@ -69,6 +70,9 @@ async function fetchLocations({ operation, input, coordinates, types }) {
 		location: coordinates ? `${latitude},${longitude}` : undefined,
 		radius: 1000,
 	};
+	if (process.env.NODE_ENV === 'development') {
+		return nearbyResponse.results;
+	}
 	try {
 		const response = await axios.post(API_URL, requestBody);
 		if (response.status === 200) {
