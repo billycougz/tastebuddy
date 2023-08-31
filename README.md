@@ -7,8 +7,6 @@
   TasteBuddy <em>Web Frontend</em>
 </h1>
 
-## 🚀 Quick start
-
 ## Env Config
 
 | Key                | .env.development                                        | .env.production |
