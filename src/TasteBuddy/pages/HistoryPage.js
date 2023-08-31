@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { PageContainer, Input, ScrollContainer, Dropdown } from '../styles';
+import { PageContainer, Input, ScrollContainer, Dropdown, Heading3 } from '../styles';
 import { getReviews } from '../localStorage';
 import { emojiRatingMap } from '../emojis';
 
@@ -136,18 +136,22 @@ export default function HistoryPage() {
 								<ReviewName>{review.name}</ReviewName>
 								<ReviewExpandIcon>{review.expanded ? '-' : '+'}</ReviewExpandIcon>
 							</ReviewHeader>
+
 							<ReviewProperty>{review.establishment?.name}</ReviewProperty>
+
 							<ReviewDate>
 								{emojiRatingMap[review.rating].emoji} • {new Date(review.createdAt).toDateString()}
 							</ReviewDate>
+
 							{review.expanded && (
 								<ExpandedContent>
 									{detailProperties
 										.filter(({ property }) => review[property])
 										.map(({ property, caption }) => (
-											<ReviewProperty>
-												<strong>{caption}:</strong> {review[property]}
-											</ReviewProperty>
+											<>
+												<Heading3>{caption}</Heading3>
+												<ReviewProperty> {review[property]}</ReviewProperty>
+											</>
 										))}
 								</ExpandedContent>
 							)}

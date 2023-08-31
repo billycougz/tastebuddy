@@ -67,9 +67,10 @@ export default function FeedbackModal({ isOpen, onClose }) {
 				Your feedback is appreciated and will be received immediately! Provide as much detail as you'd like.
 			</Paragraph>
 			<List>
-				<ListItem>Report a bug or inaccurate data</ListItem>
-				<ListItem>Suggest a UX change</ListItem>
+				<ListItem>Report an inaccurate recommendation</ListItem>
+				<ListItem>Report a bug</ListItem>
 				<ListItem>Request a feature</ListItem>
+				<ListItem>Suggest a UX change</ListItem>
 				<ListItem>Ask a question</ListItem>
 				<ListItem>Provide general feedback</ListItem>
 			</List>

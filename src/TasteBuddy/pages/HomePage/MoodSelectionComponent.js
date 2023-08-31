@@ -19,7 +19,7 @@ const DetailText = styled.p`
 	}
 `;
 
-const categories = ['Breakfast', 'Lunch', 'Dinner', 'Dessert', 'Snack', 'Drinks'];
+const categories = ['Breakfast', 'Lunch', 'Brunch', 'Appetizer/Snack', 'Dinner', 'Dessert', 'Drinks'];
 
 export default function MoodSelectionComponent({
 	onSearchError,
