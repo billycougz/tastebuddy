@@ -44,6 +44,41 @@ const DropdownMenuItem = styled.li`
 	}
 `;
 
+function shareCurrentPage() {
+	if (navigator.share) {
+		navigator
+			.share({
+				title: document.title,
+				url: window.location.href,
+			})
+			.then(() => console.log('Sharing succeeded'))
+			.catch((error) => {
+				console.error('Error sharing:', error);
+				copyUrlToClipboard();
+			});
+	} else {
+		copyUrlToClipboard();
+	}
+}
+
+function copyUrlToClipboard() {
+	const url = window.location.href;
+
+	// Create a temporary input element
+	const input = document.createElement('input');
+	input.style.position = 'fixed';
+	input.style.opacity = 0;
+	input.value = url;
+	document.body.appendChild(input);
+
+	// Select the input and copy the value to clipboard
+	input.select();
+	document.execCommand('copy');
+	document.body.removeChild(input);
+
+	alert('TasteBuddy URL has been copied to clipboard.');
+}
+
 export default function Menu({ view, onViewChange, onShowPreferences }) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -102,6 +137,10 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 		{
 			label: 'Provide feedback',
 			onClick: () => setShowFeedbackModal(true),
+		},
+		{
+			label: 'Share TasteBuddy',
+			onClick: shareCurrentPage,
 		},
 	];
 
