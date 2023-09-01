@@ -82,8 +82,9 @@ export function storeFeedbackGroup() {
 		const groupId = url?.searchParams.get('fg'); // 'fg' to represent feedback-group
 
 		if (groupId) {
-			url?.searchParams.delete('fg');
-			GATSBY_WINDOW?.history.replaceState({}, document?.title, url?.toString());
+			// The below two lines will remove the fg param from the URL and history
+			// url?.searchParams.delete('fg');
+			// GATSBY_WINDOW?.history.replaceState({}, document?.title, url?.toString());
 
 			if (!groups.some((id) => id === groupId)) {
 				groups.push(groupId);

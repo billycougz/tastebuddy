@@ -49,7 +49,7 @@ function shareCurrentPage() {
 		navigator
 			.share({
 				title: document.title,
-				url: window.location.href,
+				url: appendQueryParam(window.location.href, 'share', 'true'),
 			})
 			.then(() => console.log('Sharing succeeded'))
 			.catch((error) => {
@@ -61,8 +61,13 @@ function shareCurrentPage() {
 	}
 }
 
+function appendQueryParam(url, key, value) {
+	const separator = url.includes('?') ? '&' : '?';
+	return `${url}${separator}${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+}
+
 function copyUrlToClipboard() {
-	const url = window.location.href;
+	const url = appendQueryParam(window.location.href, 'share', 'true');
 
 	// Create a temporary input element
 	const input = document.createElement('input');
