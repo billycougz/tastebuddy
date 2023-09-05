@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, PageContainer } from '../../styles';
-import { isDevelopment } from '../../utils';
+import { isDevelopment, compressFile } from '../../utils';
 
 const FadeContainer = styled.div`
 	opacity: ${({ $fadeIn }) => ($fadeIn ? 1 : 0)};
@@ -27,10 +27,11 @@ const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 		inputElement.hidden = true;
 		const app = document.getElementById('___gatsby');
 		app.appendChild(inputElement);
-		inputElement.onchange = (e) => {
+		inputElement.onchange = async (e) => {
 			const files = Array.from(e.target.files);
 			if (allFilesSupported(files)) {
-				onMenuSelected(files);
+				const compressedFiles = await Promise.all(files.map((file) => compressFile(file)));
+				onMenuSelected(compressedFiles);
 			} else {
 				const message = `It seems you've selected an unsupported file type.\n\nAt this time, TasteBuddy only supports PNG, JPG, PDF, and TIFF.\n\nTo use this file, you can simply upload a screenshot.`;
 				alert(message);

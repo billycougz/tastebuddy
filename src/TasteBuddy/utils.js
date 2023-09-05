@@ -1,4 +1,5 @@
 import { useStaticQuery, graphql } from 'gatsby';
+import Compressor from 'compressorjs';
 
 /**
  * Useful for safeguarding Gatsby build against browser APIs
@@ -41,4 +42,37 @@ export function useAppVersion() {
 		}
 	`);
 	return data.site.siteMetadata.version;
+}
+
+export function compressFile(file) {
+	const MAX_FILE_SIZE_MB = 0.5;
+
+	function getRequiredCompressionQuality(file) {
+		const maxFileSizeBytes = MAX_FILE_SIZE_MB * 1024 * 1024;
+		const fileSizeBytes = file.size;
+		if (fileSizeBytes <= maxFileSizeBytes) {
+			// Return full quality if under max size
+			return 1;
+		} else {
+			// Calculate proportionate quality based on file size
+			const compressionQuality = maxFileSizeBytes / fileSizeBytes;
+			return compressionQuality;
+		}
+	}
+
+	const compressionQuality = getRequiredCompressionQuality(file);
+
+	if (compressionQuality === 1) {
+		return file;
+	}
+
+	return new Promise((resolve, reject) => {
+		new Compressor(file, {
+			quality: compressionQuality,
+			convertSize: MAX_FILE_SIZE_MB * 1000000,
+			convertTypes: ['image/png', 'image/webp'],
+			success: (compressedFile) => resolve(compressedFile),
+			error: (err) => reject(err.message),
+		});
+	});
 }
