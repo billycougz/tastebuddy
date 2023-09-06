@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import SplashScreen from './SplashScreen';
 import MoodSelectionComponent from './MoodSelectionComponent';
@@ -23,6 +23,13 @@ export default function HomePage({ isVisible, setView }) {
 	const [searchResults, setSearchResults] = useState(null);
 	const [showAlertType, setShowAlertType] = useState('');
 	const [nearbyPlaces, setNearbyPlaces] = useState(null);
+
+	useEffect(() => {
+		if (step === 'menu-selection') {
+			// Handle navigate back to menu-selection
+			setProcessedMenuIds(null);
+		}
+	}, [step]);
 
 	const handleMenuSelected = async (files) => {
 		setStep('mood-selection');

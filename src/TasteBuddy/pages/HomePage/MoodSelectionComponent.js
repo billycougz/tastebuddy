@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { searchMenu } from '../../api';
 import LoadingComponent from '../../components/LoadingComponent';
@@ -31,13 +31,43 @@ export default function MoodSelectionComponent({
 	const [moodInputValue, setMoodInputValue] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [errors, setErrors] = useState({});
+	const [stillUploadingTimeout, setStillUploadingTimeout] = useState(null); // Used when user searches before menu uploaded
+	const [loadingMsg, setLoadingMsg] = useState('');
+
+	useEffect(() => {
+		if (processedMenuIds && isLoading) {
+			// ToDo: Handle better
+			runSearch();
+			stillUploadingTimeout.forEach(clearTimeout);
+			setStillUploadingTimeout(null);
+		}
+	}, [processedMenuIds]);
 
 	const handleSearch = async (e) => {
+		setErrors({});
 		if (!selectedCategory) {
 			setErrors({ category: true });
 			return;
 		}
 		setIsLoading(true);
+		if (processedMenuIds) {
+			await runSearch();
+		} else {
+			// ToDo: Handle better
+			const firstTimeout = setTimeout(() => {
+				setLoadingMsg(`TasteBuddy is taking longer than normal. This usually happens when you have a poor connection.`);
+			}, 20000); // Show error after one minute
+			const secondTimeout = setTimeout(() => {
+				setIsLoading(false);
+				setLoadingMsg('');
+				setErrors({ timeout: true });
+				setStillUploadingTimeout(null);
+			}, 60000);
+			setStillUploadingTimeout([firstTimeout, secondTimeout]);
+		}
+	};
+
+	const runSearch = async () => {
 		try {
 			const response = await searchMenu({
 				category: selectedCategory,
@@ -54,7 +84,6 @@ export default function MoodSelectionComponent({
 		} catch (e) {
 			onSearchError(e.message);
 		}
-
 		setIsLoading(false);
 	};
 
@@ -79,11 +108,17 @@ export default function MoodSelectionComponent({
 	};
 
 	if (isLoading) {
-		return <LoadingComponent />;
+		return <LoadingComponent loadingMsg={loadingMsg} />;
 	}
 
 	return (
 		<PageContainer vCenter hCenter>
+			{errors.timeout && (
+				<ErrorText>
+					TasteBuddy had trouble processing your menu. You can try again or start over with a new image. Try using Wi-Fi
+					when available.
+				</ErrorText>
+			)}
 			<Dropdown $placeholder={!Boolean(selectedCategory)} onChange={handleCategoryChange} value={selectedCategory}>
 				<Option value=''>What are we ordering?</Option>
 				{categories.map((type) => (

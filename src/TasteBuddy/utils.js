@@ -76,3 +76,24 @@ export function compressFile(file) {
 		});
 	});
 }
+
+// ToDo: Not actively using this
+// 'Your image is taking longer to upload than expected. Please join Wi-Fi if possible.'
+export function waitForCondition(conditionFunction, interval, timeout) {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+
+		function checkCondition() {
+			console.log('Checking');
+			if (conditionFunction()) {
+				resolve('Condition is met.');
+			} else if (timeout && Date.now() - startTime >= timeout) {
+				reject('Timeout exceeded. Condition not met.');
+			} else {
+				setTimeout(checkCondition, interval);
+			}
+		}
+
+		checkCondition();
+	});
+}
