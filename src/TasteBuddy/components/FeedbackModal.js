@@ -19,11 +19,12 @@ import {
 } from '../styles';
 import Modal from './Modal';
 import { postFeedback } from '../api';
-import { getUserProfile, updateUserProfile } from '../localStorage';
+import { getUserProfile } from '../localStorage';
+import UserProfile from './UserProfile';
 
 export default function FeedbackModal({ isOpen, onClose }) {
-	const emptyFeedback = { message: '', ...getUserProfile() };
-	const [feedback, setFeedback] = useState(emptyFeedback);
+	const createEmptyFeedback = () => ({ message: '', ...getUserProfile() });
+	const [feedback, setFeedback] = useState(createEmptyFeedback());
 	const [error, setError] = useState(''); // 'message' | ''
 	const [success, setSuccess] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +34,6 @@ export default function FeedbackModal({ isOpen, onClose }) {
 			setError('message');
 			return;
 		}
-		updateUserProfile({ name: feedback.name, contact: feedback.contact });
 		try {
 			setIsLoading(true);
 			const response = await postFeedback(feedback);
@@ -41,6 +41,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 			// ToDo
 		}
 		setIsLoading(false);
+		// Keep contact info if provided
 		setFeedback({ ...feedback, message: '' });
 		setSuccess(true);
 	};
@@ -57,25 +58,25 @@ export default function FeedbackModal({ isOpen, onClose }) {
 	const handleClose = () => {
 		setError('');
 		setSuccess(false);
-		setFeedback(emptyFeedback);
+		setFeedback(createEmptyFeedback());
 		onClose();
+	};
+
+	const handleContactUpdate = (contactInfo) => {
+		setFeedback({ ...feedback, ...contactInfo });
 	};
 
 	return (
 		<Modal header='Feedback & Questions' isOpen={isOpen} onClose={handleClose}>
 			<Paragraph>
-				Your feedback is appreciated and will be received immediately! Provide as much detail as you'd like.
+				Your feedback is appreciated and will be received immediately! Your contact info is optional.
 			</Paragraph>
 			<List>
 				<ListItem>Report an inaccurate recommendation</ListItem>
+				<ListItem>Request a feature or change</ListItem>
 				<ListItem>Report a bug</ListItem>
-				<ListItem>Request a feature</ListItem>
-				<ListItem>Suggest a UX change</ListItem>
 				<ListItem>Ask a question</ListItem>
-				<ListItem>Provide general feedback</ListItem>
 			</List>
-			<Paragraph>Provide your name and contact info if you're open to being contacted for more info.</Paragraph>
-
 			<FlexContainer mt='1rem'>
 				<TextArea
 					disabled={isLoading}
@@ -85,22 +86,10 @@ export default function FeedbackModal({ isOpen, onClose }) {
 					lightBorder
 				/>
 				{error === 'message' && <ErrorText>It doesn't appear you've written anything.</ErrorText>}
-				<Input
-					disabled={isLoading}
-					onChange={(e) => setFeedback({ ...feedback, name: e.target.value })}
-					value={feedback.name}
-					type='text'
-					placeholder='Your Name (optional)'
-					lightBorder
-				/>
-				<Input
-					disabled={isLoading}
-					onChange={(e) => setFeedback({ ...feedback, contact: e.target.value })}
-					value={feedback.contact}
-					type='text'
-					placeholder='Your phone or email (optional)'
-					lightBorder
-				/>
+
+				<div style={{ marginTop: '-19px', width: '100%' }}>
+					<UserProfile formOnly disableSave onUpdate={handleContactUpdate} />
+				</div>
 
 				<WhiteButton onClick={handleSubmit} fullWidth disabled={isLoading}>
 					Submit

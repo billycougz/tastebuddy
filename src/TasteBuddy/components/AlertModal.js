@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Heading2, List, Paragraph, SubText, WhiteButton } from '../styles';
-import localStorage, { getPreferences } from '../localStorage';
+import localStorage, { getMetadata, getPreferences } from '../localStorage';
 import { isAndroid, isMobile, isStandalone } from '../utils';
 import PreferencesComponent from './PreferencesComponent';
 import { GoShare } from 'react-icons/go';
 import { BsPlusSquare } from 'react-icons/bs';
 import AndroidInstallButton from './AndroidInstallButton';
 import FeedbackModal from './FeedbackModal';
+import UserProfile from './UserProfile';
+import { postFeedback } from '../api';
 
 const ModalBackdrop = styled.div`
 	position: fixed;
@@ -175,7 +177,7 @@ function IntroEndContent() {
 	);
 }
 
-const newUserSegments = [IntroContent, BrowserContent, PreferenceContent, IntroEndContent];
+const newUserSegments = [IntroContent, BrowserContent, PreferenceContent, UserProfile, IntroEndContent];
 
 const AlertModal = ({ type, onClose, hideDisable }) => {
 	const [disableAlert, setDisableAlert] = useState(false);
@@ -199,6 +201,11 @@ const AlertModal = ({ type, onClose, hideDisable }) => {
 	}
 
 	const handleClose = () => {
+		// ToDo: Handle better
+		const usage = getMetadata(true);
+		if (usage?.accessCount && usage.accessCount < 2) {
+			postFeedback({ message: 'New User' });
+		}
 		if (disableAlert) {
 			localStorage.setItem(`tastebuddy-${type}-alert-disabled`, 'true');
 		}

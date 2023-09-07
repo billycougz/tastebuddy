@@ -119,11 +119,9 @@ export default function AboutPage() {
 							Submit your feedback directly through the app and optionally provide your contact info.
 							<List>
 								<ListItem>Report an inaccurate recommendation</ListItem>
+								<ListItem>Request a feature or change</ListItem>
 								<ListItem>Report a bug</ListItem>
-								<ListItem>Request a feature</ListItem>
-								<ListItem>Suggest a UX change</ListItem>
 								<ListItem>Ask a question</ListItem>
-								<ListItem>Provide general feedback</ListItem>
 							</List>
 						</Paragraph>
 						<WhiteButton fullWidth onClick={() => setShowFeedbackModal(true)}>

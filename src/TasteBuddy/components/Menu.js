@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import FeedbackModal from './FeedbackModal';
 import ManageData from './ManageData';
 import { isDevelopment } from '../utils';
+import Modal from './Modal';
+import UserProfile from './UserProfile';
 
 const DropdownContainer = styled.div`
 	position: fixed;
@@ -88,6 +90,7 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [showManageStorageModal, setShowManageStorageModal] = useState(false);
+	const [showContactModal, setShowContactModal] = useState(false);
 
 	const dropdownRef = useRef(null);
 
@@ -133,11 +136,15 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 			},
 		},
 		{
-			label: 'View or change your preferences',
+			label: 'Manage your preferences',
 			onClick: () => {
 				onShowPreferences(true);
 				closeDropdown();
 			},
+		},
+		{
+			label: 'Manage your contact info',
+			onClick: () => setShowContactModal(true),
 		},
 		{
 			label: 'Provide feedback',
@@ -159,7 +166,12 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 	return (
 		<DropdownContainer ref={dropdownRef}>
 			{showManageStorageModal && <ManageData onClose={() => setShowManageStorageModal(false)} />}
-			<FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
+			{showFeedbackModal && <FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />}
+			{showContactModal && (
+				<Modal isOpen={true} onClose={() => setShowContactModal(false)} closeText='Save'>
+					<UserProfile />
+				</Modal>
+			)}
 			<DropdownButton onClick={toggleDropdown}>...</DropdownButton>
 			<DropdownMenu isOpen={isDropdownOpen}>
 				{menuItems
