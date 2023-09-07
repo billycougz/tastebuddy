@@ -97,3 +97,27 @@ export function waitForCondition(conditionFunction, interval, timeout) {
 		checkCondition();
 	});
 }
+
+export function triggerAnalytics() {
+	if (isDevelopment()) {
+		return;
+	}
+	// Get the query parameter value you want to track (e.g., 'utm_source')
+	const queryParams = new URLSearchParams(window.location.search);
+	const paramValue = queryParams.get('fg');
+
+	// Check if the query parameter value exists and is not empty
+	if (paramValue) {
+		// Define the event category, action, and label (customize as needed)
+		const eventCategory = 'Page Views';
+		const eventAction = 'QueryParam Page View';
+		const eventLabel = paramValue;
+
+		// Send the event to Google Analytics using gtag.js
+		window.gtag('event', 'page_view', {
+			event_category: eventCategory,
+			event_action: eventAction,
+			event_label: eventLabel,
+		});
+	}
+}

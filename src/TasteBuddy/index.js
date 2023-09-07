@@ -6,7 +6,7 @@ import HistoryPage from './pages/HistoryPage';
 import HomePage from './pages/HomePage';
 import AlertModal from './components/AlertModal';
 import localStorage, { updateUsageMetadata } from './localStorage';
-import { isBrowser, isMobile, isStandalone, useAppVersion } from './utils';
+import { isBrowser, isMobile, isStandalone, triggerAnalytics, useAppVersion } from './utils';
 import PreferencesProvider from './components/PreferencesProvider';
 import InlineAlert from './components/InlineAlert';
 
@@ -30,6 +30,7 @@ export default function TasteBuddy() {
 
 	useEffect(() => {
 		updateUsageMetadata(appVersion);
+		triggerAnalytics();
 	}, []);
 
 	const showStandaloneBanner = !showAlertType && isMobile() && !isStandalone();
