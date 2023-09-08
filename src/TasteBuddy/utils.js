@@ -109,8 +109,9 @@ export function triggerAnalytics() {
 	// Check if the query parameter value exists and is not empty
 	if (paramValue) {
 		// Define the event category, action, and label (customize as needed)
-		const eventCategory = 'Page Views';
-		const eventAction = 'QueryParam Page View';
+		const eventCategory = 'Feedback Group';
+		const eventAction = paramValue;
+		// ToDo - Address
 		const eventLabel = paramValue;
 
 		// Send the event to Google Analytics using gtag.js
