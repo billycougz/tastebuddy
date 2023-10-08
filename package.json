@@ -17,6 +17,7 @@
     "deploy": "npm run build && gh-pages -d public -b gh-pages"
   },
   "dependencies": {
+    "aws-amplify": "^5.3.11",
     "axios": "^1.4.0",
     "axios-retry": "^3.6.0",
     "babel-plugin-styled-components": "^2.1.4",

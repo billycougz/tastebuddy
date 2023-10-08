@@ -1,8 +1,15 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import { getMetadata } from './localStorage';
+import { Auth } from 'aws-amplify';
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(axios, { retries: 1, retryDelay: axiosRetry.exponentialDelay });
+
+async function getAuthHeaders() {
+	const session = await Auth.currentSession();
+	const idToken = session.getIdToken().getJwtToken();
+	return { Authorization: idToken };
+}
 
 const __MOCK__ = Boolean(process.env.MOCK_API_RESPONSE);
 
@@ -17,16 +24,22 @@ export async function uploadMenu(files) {
 		return ['85242caa-bb70-4826-ba19-b373c2b967e2.jpg'];
 	}
 
+	const headers = await getAuthHeaders();
+
 	/**
 	 * @param {*} files array files from a file input
 	 * @returns dictionary of [localFilename]: { uploadUrl, s3Filename }
 	 */
 	async function generatePresignedUrls(files) {
 		const filenames = files.map(({ name }) => name);
-		const response = await axios.post(API_ENDPOINT, {
-			operation: 'generate-presigned-urls',
-			filenames,
-		});
+		const response = await axios.post(
+			API_ENDPOINT,
+			{
+				operation: 'generate-presigned-urls',
+				filenames,
+			},
+			{ headers }
+		);
 		if (response?.data) {
 			return response.data;
 		}
@@ -81,13 +94,14 @@ export async function searchMenu({ category, menuIds, menuType, mood, preference
 			],
 		};
 	}
+	const headers = await getAuthHeaders();
 	const payload = {
 		operation: 'search-menu',
 		extract_names: menuIds,
 		preferences: { menuType, category, mood, ...preferences },
 	};
 	try {
-		const response = await axios.post(API_ENDPOINT, payload);
+		const response = await axios.post(API_ENDPOINT, payload, { headers });
 		if (response.data) {
 			return response.data;
 		}

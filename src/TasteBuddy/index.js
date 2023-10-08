@@ -9,6 +9,10 @@ import localStorage, { updateUsageMetadata } from './localStorage';
 import { isBrowser, isMobile, isStandalone, triggerAnalytics, useAppVersion } from './utils';
 import PreferencesProvider from './components/PreferencesProvider';
 import InlineAlert from './components/InlineAlert';
+import { Amplify } from 'aws-amplify';
+import awsExports from '../aws-exports';
+
+Amplify.configure(awsExports);
 
 const AppContainer = styled.div`
 	background-color: #1a1a1a;

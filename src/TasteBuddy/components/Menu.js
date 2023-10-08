@@ -5,6 +5,7 @@ import ManageData from './ManageData';
 import { isDevelopment } from '../utils';
 import Modal from './Modal';
 import UserProfile from './UserProfile';
+import { Auth } from 'aws-amplify';
 
 const DropdownContainer = styled.div`
 	position: fixed;
@@ -153,6 +154,12 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 		{
 			label: 'Share TasteBuddy',
 			onClick: shareCurrentPage,
+		},
+		{
+			label: 'Logout',
+			onClick: () => {
+				Auth.signOut();
+			},
 		},
 	];
 

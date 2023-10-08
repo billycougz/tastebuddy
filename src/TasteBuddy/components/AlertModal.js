@@ -173,6 +173,7 @@ function IntroEndContent() {
 		<div>
 			<Heading2>Let's Get Started!</Heading2>
 			<Paragraph>TasteBuddy understands your preferences and is ready for your first menu!</Paragraph>
+			<Paragraph>First time users will be asked to log in.</Paragraph>
 		</div>
 	);
 }

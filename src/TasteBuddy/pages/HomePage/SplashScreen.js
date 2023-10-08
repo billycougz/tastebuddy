@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, PageContainer } from '../../styles';
 import { isDevelopment, compressFile } from '../../utils';
+import AuthComponent from '../../components/AuthComponent';
 
 const FadeContainer = styled.div`
 	opacity: ${({ $fadeIn }) => ($fadeIn ? 1 : 0)};
@@ -15,7 +16,7 @@ const Title = styled.h1`
 	margin-bottom: -1rem;
 `;
 
-const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
+const SplashScreen = ({ onMenuSelected, onMockUpload, user }) => {
 	const [fadeIn, setFadeIn] = useState(false);
 
 	const handleMenuSelected = () => {
@@ -52,7 +53,6 @@ const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 		const timer = setTimeout(() => {
 			setFadeIn(true);
 		}, 1000);
-
 		return () => clearTimeout(timer);
 	}, []);
 
@@ -61,17 +61,23 @@ const SplashScreen = ({ onMenuSelected, onMockUpload }) => {
 			<Title>TasteBuddy</Title>
 			<sub>Your AI companion for food & drink recommendations</sub>
 			<FadeContainer $fadeIn={fadeIn}>
-				<Button onClick={handleMenuSelected}>
-					Upload Menu <span>📷</span>
-				</Button>
-				{isDevelopment() && (
+				{user && (
 					<>
-						<br />
-						<Button mt='1rem' onClick={onMockUpload}>
-							Mock Upload <span>📷</span>
+						<Button onClick={handleMenuSelected}>
+							Upload Menu <span>📷</span>
 						</Button>
+						{isDevelopment() && (
+							<>
+								<br />
+								<Button mt='1rem' onClick={onMockUpload}>
+									Mock Upload <span>📷</span>
+								</Button>
+							</>
+						)}
 					</>
 				)}
+
+				{!user && <AuthComponent />}
 			</FadeContainer>
 		</PageContainer>
 	);

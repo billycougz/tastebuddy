@@ -1,5 +1,6 @@
 import { useStaticQuery, graphql } from 'gatsby';
 import Compressor from 'compressorjs';
+import { Auth } from 'aws-amplify';
 
 /**
  * Useful for safeguarding Gatsby build against browser APIs
@@ -120,5 +121,14 @@ export function triggerAnalytics() {
 			event_action: eventAction,
 			event_label: eventLabel,
 		});
+	}
+}
+
+export async function getUser() {
+	try {
+		const user = await Auth.currentAuthenticatedUser();
+		return user;
+	} catch (error) {
+		return null;
 	}
 }

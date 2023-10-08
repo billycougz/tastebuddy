@@ -3,3 +3,4 @@ node_modules/
 public
 .env*
 .DS_STORE
+aws-exports.js

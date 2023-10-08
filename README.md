@@ -39,3 +39,43 @@ Additional Reference:
 
 - [Gatsby Commands](https://www.gatsbyjs.com/docs/reference/gatsby-cli/)
 - [GitHub Pages Command](https://github.com/tschaub/gh-pages)
+
+## Auth
+The app uses one Cognito pool for both dev and prod.
+- See [Social sign-in (OAuth)](https://docs.amplify.aws/lib/auth/social/q/platform/js/)
+- See OAuth provider portals (Google, Facebook, etc.)
+- See AWS resources
+  - Cognito
+  - API Gateway
+  - SES (for email verification)
+  - Route 53 (for auth domain)
+  - Amplify (for auth library)
+
+### src/aws-exports.js 
+Used by the `aws-amplify` library to configure Auth.
+
+Ignored by git.
+```js
+/**
+ * aws_user_pools_id - Cognito User Pool > General Settings > Pool Id
+ * aws_user_pools_web_client_id - Cognito User Pool > App Integration > App Client Id
+ * domain - Cognito User Pool > App Integration > Domain name (don't include https://)
+ * redirectSignIn - stage specific host url
+ * redirectSignOut - stage specific host url
+ */ 
+const awsmobile = {
+	aws_project_region: 'us-east-1',
+	aws_cognito_region: 'us-east-1',
+	aws_user_pools_id: '',
+	aws_user_pools_web_client_id: '',
+	oauth: {
+		domain: '',
+		scope: ['openid', 'email', 'profile'],
+		redirectSignIn: '',
+		redirectSignOut: '',
+		responseType: 'code',
+	},
+};
+
+export default awsmobile;
+```

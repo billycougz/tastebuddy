@@ -11,12 +11,14 @@ import { uploadMenu } from '../../api';
 import { PageContainer } from '../../styles';
 import { fetchNearbyPlaces } from '../../location-services';
 import AlertModal from '../../components/AlertModal';
+import { getUser } from '../../utils';
 
 const Container = styled(PageContainer)`
 	display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
 `;
 
 export default function HomePage({ isVisible, setView }) {
+	const [user, setUser] = useState(null);
 	const [step, setStep] = useState('menu-selection');
 	const [showPreferences, setShowPreferences] = useState(false);
 	const [processedMenuIds, setProcessedMenuIds] = useState(null);
@@ -25,11 +27,17 @@ export default function HomePage({ isVisible, setView }) {
 	const [nearbyPlaces, setNearbyPlaces] = useState(null);
 
 	useEffect(() => {
+		updateUser();
 		if (step === 'menu-selection') {
 			// Handle navigate back to menu-selection
 			setProcessedMenuIds(null);
 		}
 	}, [step]);
+
+	const updateUser = async () => {
+		const user = await getUser();
+		setUser(user);
+	};
 
 	const handleMenuSelected = async (files) => {
 		setStep('mood-selection');
@@ -105,10 +113,12 @@ export default function HomePage({ isVisible, setView }) {
 
 			{showAlertType && <AlertModal type={showAlertType} hideDisable onClose={handleCloseLocationModal} />}
 
-			{step.includes('select') && <Menu view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />}
+			{step.includes('select') && user && (
+				<Menu view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />
+			)}
 
 			{step === 'menu-selection' && (
-				<SplashScreen onMenuSelected={handleMenuSelected} onMockUpload={handleMockUpload} />
+				<SplashScreen user={user} onMenuSelected={handleMenuSelected} onMockUpload={handleMockUpload} />
 			)}
 			{step === 'mood-selection' && (
 				<MoodSelectionComponent
