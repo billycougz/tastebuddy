@@ -87,7 +87,7 @@ function copyUrlToClipboard() {
 	alert('TasteBuddy URL has been copied to clipboard.');
 }
 
-export default function Menu({ view, onViewChange, onShowPreferences }) {
+export default function Menu({ user, view, onViewChange, onShowPreferences }) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [showManageStorageModal, setShowManageStorageModal] = useState(false);
@@ -118,6 +118,8 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 			};
 		}
 	}, []);
+
+	const userEmail = user?.signInUserSession?.idToken?.payload?.email;
 
 	const menuItems = [
 		{
@@ -156,7 +158,7 @@ export default function Menu({ view, onViewChange, onShowPreferences }) {
 			onClick: shareCurrentPage,
 		},
 		{
-			label: 'Logout',
+			label: `Logout ${userEmail || ''}`,
 			onClick: () => {
 				Auth.signOut();
 			},

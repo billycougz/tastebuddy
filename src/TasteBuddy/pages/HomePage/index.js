@@ -114,7 +114,7 @@ export default function HomePage({ isVisible, setView }) {
 			{showAlertType && <AlertModal type={showAlertType} hideDisable onClose={handleCloseLocationModal} />}
 
 			{step.includes('select') && user && (
-				<Menu view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />
+				<Menu user={user} view={step} onViewChange={setStep} onShowPreferences={setShowPreferences} />
 			)}
 
 			{step === 'menu-selection' && (
